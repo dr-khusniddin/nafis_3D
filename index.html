@@ -1,0 +1,1505 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nafis 3D - Скульптинг</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #1a1a2e;
+            color: #e0e0e0;
+            overflow: hidden;
+            height: 100vh;
+            user-select: none;
+        }
+        #app { display: flex; height: 100vh; }
+        #sidebar {
+            width: 220px;
+            background: #16213e;
+            padding: 15px;
+            border-right: 1px solid #2a2a4a;
+            overflow-y: auto;
+            flex-shrink: 0;
+            z-index: 10;
+        }
+        #sidebar h2 {
+            font-size: 18px;
+            margin-bottom: 12px;
+            border-bottom: 2px solid #4a4a6a;
+            padding-bottom: 8px;
+            color: #66aaff;
+        }
+        .group {
+            background: #1a1a3a;
+            border-radius: 6px;
+            padding: 10px;
+            margin-bottom: 8px;
+            border: 1px solid #2a2a4a;
+        }
+        .group-title {
+            font-size: 11px;
+            font-weight: bold;
+            color: #8888aa;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        button {
+            width: 100%;
+            padding: 7px;
+            margin: 2px 0;
+            background: #2a2a4a;
+            color: #e0e0e0;
+            border: 1px solid #4a4a6a;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: bold;
+            transition: all 0.15s;
+        }
+        button:hover { background: #3a3a5a; transform: scale(1.01); }
+        button:active { transform: scale(0.98); }
+        button.primary { background: #1a3a6a; border-color: #3a6aaa; }
+        button.primary:hover { background: #2a4a7a; }
+        button.danger { background: #6a2a2a; border-color: #aa4a4a; }
+        button.danger:hover { background: #7a3a3a; }
+        button.success { background: #1a6a3a; border-color: #3a9a5a; }
+        button.success:hover { background: #2a7a4a; }
+        button.warning { background: #6a5a1a; border-color: #aa8a3a; }
+        button.warning:hover { background: #7a6a2a; }
+        button.surface-mode {
+            background: #2a4a4a;
+            border-color: #4a8a8a;
+        }
+        button.surface-mode.active {
+            background: #1a6a4a;
+            border-color: #3aaa6a;
+        }
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 3px 0;
+            cursor: pointer;
+            font-size: 13px;
+        }
+        .checkbox-label input[type="checkbox"] { width: 15px; height: 15px; cursor: pointer; }
+        #canvas-container { flex: 1; height: 100vh; background: #0d0d1a; position: relative; cursor: pointer; }
+        #info-panel {
+            width: 185px;
+            background: #16213e;
+            padding: 12px;
+            border-left: 1px solid #2a2a4a;
+            flex-shrink: 0;
+        }
+        #info-panel .info-item {
+            padding: 3px 0;
+            font-size: 12px;
+            border-bottom: 1px solid #1a1a3a;
+        }
+        #info-panel .info-item .label { color: #8888aa; font-size: 10px; text-transform: uppercase; }
+        #info-panel .info-item .value { color: #e0e0e0; font-weight: bold; margin-top: 1px; }
+        #info-panel .info-item .value.mode-vertex { color: #66aaff; }
+        #info-panel .info-item .value.mode-surface { color: #66ffaa; }
+        .status {
+            padding: 5px 8px;
+            border-radius: 4px;
+            margin-top: 6px;
+            font-size: 12px;
+            text-align: center;
+        }
+        .status.success { background: #1a4a2a; color: #8affaa; }
+        .status.warning { background: #4a4a1a; color: #ffff8a; }
+        .status.error { background: #4a1a1a; color: #ff8a8a; }
+        .status.info { background: #1a2a4a; color: #8aafff; }
+        #file-input, #mtl-input, #texture-input { display: none; }
+        .hint { font-size: 10px; color: #555; padding: 3px 0; text-align: center; }
+        #log {
+            background: #0a0a1a;
+            border-radius: 4px;
+            padding: 6px;
+            font-size: 10px;
+            max-height: 80px;
+            overflow-y: auto;
+            font-family: monospace;
+            color: #88aa88;
+            margin-top: 4px;
+            line-height: 1.4;
+        }
+        #log .error { color: #ff6666; }
+        #log .success { color: #66ff66; }
+        #log .info { color: #66aaff; }
+        #log .warn { color: #ffaa44; }
+        .brush-control {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 4px 0;
+        }
+        .brush-control input[type="range"] {
+            flex: 1;
+            height: 4px;
+            -webkit-appearance: none;
+            background: #2a2a4a;
+            border-radius: 2px;
+            outline: none;
+        }
+        .brush-control input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #4a7aaa;
+            cursor: pointer;
+        }
+        .brush-control span {
+            font-size: 12px;
+            min-width: 30px;
+            text-align: center;
+            color: #8888aa;
+        }
+        .selected-count {
+            font-size: 20px;
+            font-weight: bold;
+            color: #FFA500;
+            text-align: center;
+            padding: 4px;
+        }
+        .mode-indicator {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            text-align: center;
+            margin-top: 4px;
+            font-weight: bold;
+        }
+        .mode-indicator.vertex {
+            background: #1a2a4a;
+            color: #66aaff;
+        }
+        .mode-indicator.surface {
+            background: #1a4a2a;
+            color: #66ffaa;
+        }
+        @media (max-width: 768px) {
+            #sidebar { width: 170px; padding: 10px; }
+            #info-panel { width: 140px; padding: 10px; }
+        }
+        @media (max-width: 600px) {
+            #sidebar { width: 100%; height: auto; border-right: none; border-bottom: 1px solid #2a2a4a; max-height: 40vh; }
+            #info-panel { display: none; }
+            #app { flex-direction: column; }
+            #canvas-container { height: calc(60vh); }
+        }
+    </style>
+</head>
+<body>
+
+<div id="app">
+    <div id="sidebar">
+        <h2>🏥 Nafis 3D</h2>
+        
+        <div class="group">
+            <div class="group-title">📂 Файл</div>
+            <button class="primary" id="btn-load">📂 Загрузить OBJ</button>
+            <button id="btn-load-mtl">📄 Загрузить MTL</button>
+            <button id="btn-load-texture">🖼 Загрузить текстуру</button>
+            <button id="btn-export">💾 Экспортировать</button>
+            <div class="hint">OBJ → MTL → Текстура</div>
+            <input type="file" id="file-input" accept=".obj">
+            <input type="file" id="mtl-input" accept=".mtl">
+            <input type="file" id="texture-input" accept="image/*">
+        </div>
+        
+        <div class="group">
+            <div class="group-title">🎯 Выделение</div>
+            <button id="btn-center">🎯 Центр</button>
+            <button id="btn-top">⬆ Верх</button>
+            <button id="btn-bottom">⬇ Низ</button>
+            <button id="btn-random">🎲 Случайно</button>
+            <button class="danger" id="btn-clear">🧹 Снять</button>
+            <div class="hint">Или кликните по модели</div>
+            
+            <div class="brush-control">
+                <span>🖌 Радиус</span>
+                <input type="range" id="brush-size" min="1" max="100" value="30">
+                <span id="brush-label">0.30</span>
+            </div>
+        </div>
+        
+        <div class="group">
+            <div class="group-title">⚙️ Настройки сглаживания</div>
+            <div class="brush-control">
+                <span>💪 Сила</span>
+                <input type="range" id="smooth-strength" min="1" max="50" value="15">
+                <span id="strength-label">0.15</span>
+            </div>
+            <div class="brush-control">
+                <span>🔄 Итерации</span>
+                <input type="range" id="smooth-iterations" min="1" max="20" value="5">
+                <span id="iterations-label">5</span>
+            </div>
+        </div>
+        
+        <div class="group">
+            <div class="group-title">🛠 Инструменты</div>
+            <button class="success" id="btn-smooth">✨ Сгладить</button>
+            <button id="btn-pull">⬆ Вытянуть</button>
+            <button id="btn-push">⬇ Вдавить</button>
+            <button id="btn-flatten">📏 Выровнять</button>
+            <button class="warning" id="btn-inflate">💨 Надуть</button>
+            <button id="btn-pinch">🤏 Сузить</button>
+            <button class="surface-mode" id="btn-surface-mode">🔘 Режим: Вершины</button>
+            <div class="mode-indicator vertex" id="mode-indicator">🔹 Режим: Вершины (меняет каркас)</div>
+        </div>
+        
+        <div class="group">
+            <div class="group-title">👁 Отображение</div>
+            <label class="checkbox-label">
+                <input type="checkbox" id="chk-wireframe"> Каркас
+            </label>
+            <label class="checkbox-label">
+                <input type="checkbox" id="chk-texture" checked> Текстура
+            </label>
+            <label class="checkbox-label">
+                <input type="checkbox" id="chk-highlight" checked> Подсветка
+            </label>
+        </div>
+        
+        <div id="log"></div>
+    </div>
+    
+    <div id="canvas-container"></div>
+    
+    <div id="info-panel">
+        <div class="group">
+            <div class="group-title">📊 Информация</div>
+            <div class="info-item">
+                <div class="label">Модель</div>
+                <div class="value" id="info-name" style="font-size:11px;">—</div>
+            </div>
+            <div class="info-item">
+                <div class="label">Вершины</div>
+                <div class="value" id="info-vertices">—</div>
+            </div>
+            <div class="info-item">
+                <div class="label">Треугольники</div>
+                <div class="value" id="info-faces">—</div>
+            </div>
+            <div class="info-item">
+                <div class="label">Выделено</div>
+                <div class="selected-count" id="info-selected">0</div>
+            </div>
+            <div class="info-item">
+                <div class="label">Текстура</div>
+                <div class="value" id="info-texture" style="color:#f44336;">❌</div>
+            </div>
+            <div class="info-item">
+                <div class="label">MTL</div>
+                <div class="value" id="info-mtl" style="color:#f44336;">❌</div>
+            </div>
+            <div class="info-item">
+                <div class="label">Режим</div>
+                <div class="value mode-vertex" id="info-mode">🔹 Вершины</div>
+            </div>
+            <div class="status success" id="info-status">✅ Готов</div>
+        </div>
+    </div>
+</div>
+
+<script type="importmap">
+{
+    "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.157.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.157.0/examples/jsm/"
+    }
+}
+</script>
+
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
+import { MTLLoader } from 'three/addons/loaders/MTLLoader.js';
+
+// ============================================================
+// ЛОГГЕР
+// ============================================================
+
+const logEl = document.getElementById('log');
+
+function addLog(msg, type = 'info') {
+    const div = document.createElement('div');
+    div.className = type;
+    div.textContent = msg;
+    logEl.appendChild(div);
+    logEl.scrollTop = logEl.scrollHeight;
+    console.log(msg);
+}
+
+// ============================================================
+// ИНИЦИАЛИЗАЦИЯ
+// ============================================================
+
+const container = document.getElementById('canvas-container');
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x0d0d1a);
+
+const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.01, 100);
+camera.position.set(2.5, 1.5, 4);
+camera.lookAt(0, 0, 0);
+
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setSize(container.clientWidth, container.clientHeight);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+container.appendChild(renderer.domElement);
+
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+controls.dampingFactor = 0.1;
+controls.minDistance = 0.3;
+controls.maxDistance = 20;
+controls.target.set(0, 0, 0);
+
+// ============================================================
+// СВЕТ
+// ============================================================
+
+const ambientLight = new THREE.AmbientLight(0x404060, 0.5);
+scene.add(ambientLight);
+
+const light1 = new THREE.DirectionalLight(0xffffff, 1.0);
+light1.position.set(2, 3, 4);
+scene.add(light1);
+
+const light2 = new THREE.DirectionalLight(0x8888ff, 0.4);
+light2.position.set(-2, -1, -3);
+scene.add(light2);
+
+const light3 = new THREE.DirectionalLight(0x444488, 0.3);
+light3.position.set(0, -2, 1);
+scene.add(light3);
+
+// ============================================================
+// СЕТКА
+// ============================================================
+
+const gridHelper = new THREE.GridHelper(3, 20, 0x444466, 0x333355);
+gridHelper.position.y = -0.5;
+scene.add(gridHelper);
+
+// ============================================================
+// ПЕРЕМЕННЫЕ
+// ============================================================
+
+let model = null;
+let modelGroup = new THREE.Group();
+scene.add(modelGroup);
+
+let highlightMesh = null;
+let highlightSphere = null;
+let selectedIndices = [];
+let isModelLoaded = false;
+
+let objText = null;
+let mtlText = null;
+let textureImage = null;
+let textureLoaded = false;
+let mtlLoaded = false;
+
+let brushRadius = 0.3;
+let showHighlight = true;
+
+// Настройки сглаживания
+let smoothStrength = 0.15;
+let smoothIterations = 5;
+
+// Режим работы: 'vertex' или 'surface'
+let currentMode = 'vertex'; // 'vertex' - меняет каркас, 'surface' - только поверхность
+
+// Raycaster
+const raycaster = new THREE.Raycaster();
+const pointer = new THREE.Vector2();
+
+// ============================================================
+// ЗАГРУЗКА МОДЕЛИ
+// ============================================================
+
+function loadModel() {
+    if (!objText) {
+        addLog('❌ Сначала загрузите OBJ файл!', 'error');
+        return;
+    }
+    
+    addLog('🔄 Загрузка модели...', 'info');
+    
+    try {
+        while(modelGroup.children.length > 0) {
+            const child = modelGroup.children[0];
+            if (child.geometry) child.geometry.dispose();
+            if (child.material) child.material.dispose();
+            modelGroup.remove(child);
+        }
+        
+        let materials = null;
+        
+        if (mtlText) {
+            addLog('📄 Загрузка MTL...', 'info');
+            const mtlLoader = new MTLLoader();
+            mtlLoader.parse(mtlText, '', (loadedMaterials) => {
+                materials = loadedMaterials;
+                mtlLoaded = true;
+                document.getElementById('info-mtl').textContent = '✅';
+                document.getElementById('info-mtl').style.color = '#4CAF50';
+                addLog('✅ MTL загружен', 'success');
+                applyLoadedModel(materials);
+            });
+        } else {
+            applyLoadedModel(null);
+        }
+        
+    } catch (err) {
+        addLog('❌ Ошибка: ' + err.message, 'error');
+        console.error(err);
+    }
+}
+
+function applyLoadedModel(materials) {
+    try {
+        const loader = new OBJLoader();
+        if (materials) {
+            loader.setMaterials(materials);
+        }
+        
+        const obj = loader.parse(objText);
+        
+        if (!obj || obj.children.length === 0) {
+            addLog('❌ Модель не содержит геометрии', 'error');
+            return;
+        }
+        
+        let meshCount = 0;
+        obj.children.forEach(child => {
+            if (child.isMesh) {
+                meshCount++;
+                
+                if (textureImage && child.material) {
+                    const texture = new THREE.Texture(textureImage);
+                    texture.needsUpdate = true;
+                    child.material.map = texture;
+                    child.material.color.setHex(0xffffff);
+                    child.material.needsUpdate = true;
+                }
+                
+                modelGroup.add(child);
+            }
+        });
+        
+        if (meshCount === 0) {
+            addLog('❌ Нет мешей в модели', 'error');
+            return;
+        }
+        
+        const box = new THREE.Box3().setFromObject(modelGroup);
+        const center = new THREE.Vector3();
+        box.getCenter(center);
+        modelGroup.position.sub(center);
+        
+        const size = box.getSize(new THREE.Vector3());
+        const maxDim = Math.max(size.x, size.y, size.z);
+        if (maxDim > 0) {
+            const scale = 1.8 / maxDim;
+            modelGroup.scale.set(scale, scale, scale);
+        }
+        
+        model = modelGroup.children.find(c => c.isMesh);
+        
+        if (model) {
+            const pos = model.geometry.attributes.position;
+            const vertCount = pos.count;
+            const faceCount = model.geometry.index ? model.geometry.index.count / 3 : vertCount / 3;
+            isModelLoaded = true;
+            
+            document.getElementById('info-name').textContent = '✅ ' + (modelName || 'Модель');
+            document.getElementById('info-vertices').textContent = vertCount.toLocaleString();
+            document.getElementById('info-faces').textContent = Math.round(faceCount).toLocaleString();
+            
+            if (textureImage) {
+                document.getElementById('info-texture').textContent = '✅';
+                document.getElementById('info-texture').style.color = '#4CAF50';
+            }
+            
+            document.getElementById('info-status').textContent = '✅ Загружена';
+            document.getElementById('info-status').className = 'status success';
+            
+            addLog(`✅ Загружено: ${vertCount} вершин, ${Math.round(faceCount)} треугольников`, 'success');
+            
+            selectedIndices = [];
+            document.getElementById('info-selected').textContent = '0';
+            clearHighlight();
+        }
+        
+    } catch (err) {
+        addLog('❌ Ошибка: ' + err.message, 'error');
+        console.error(err);
+    }
+}
+
+// ============================================================
+// ЗАГРУЗКА ТЕКСТУРЫ
+// ============================================================
+
+function loadTextureFile(file) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const img = new Image();
+        img.onload = function() {
+            textureImage = img;
+            textureLoaded = true;
+            document.getElementById('info-texture').textContent = '✅';
+            document.getElementById('info-texture').style.color = '#4CAF50';
+            addLog('✅ Текстура загружена: ' + img.width + 'x' + img.height, 'success');
+            
+            if (model) {
+                const texture = new THREE.Texture(img);
+                texture.needsUpdate = true;
+                model.material.map = texture;
+                model.material.color.setHex(0xffffff);
+                model.material.needsUpdate = true;
+                addLog('✅ Текстура применена к модели', 'success');
+            }
+        };
+        img.onerror = function() {
+            addLog('❌ Ошибка загрузки изображения', 'error');
+        };
+        img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+}
+
+// ============================================================
+// ПОЛУЧЕНИЕ ПОЗИЦИЙ ВЕРШИН
+// ============================================================
+
+function getVertexPositions() {
+    if (!model || !model.geometry) return null;
+    const pos = model.geometry.attributes.position;
+    const positions = [];
+    for (let i = 0; i < pos.count; i++) {
+        const v = new THREE.Vector3(pos.getX(i), pos.getY(i), pos.getZ(i));
+        v.applyMatrix4(model.matrixWorld);
+        positions.push(v);
+    }
+    return positions;
+}
+
+// ============================================================
+// ВЫДЕЛЕНИЕ
+// ============================================================
+
+function clearHighlight() {
+    if (highlightMesh) {
+        scene.remove(highlightMesh);
+        highlightMesh.geometry.dispose();
+        highlightMesh.material.dispose();
+        highlightMesh = null;
+    }
+    if (highlightSphere) {
+        scene.remove(highlightSphere);
+        highlightSphere.geometry.dispose();
+        highlightSphere.material.dispose();
+        highlightSphere = null;
+    }
+}
+
+function highlightIndices(indices, centerPos) {
+    clearHighlight();
+    
+    if (!model || indices.length === 0 || !showHighlight) return;
+    
+    const pos = model.geometry.attributes.position;
+    const positions = [];
+    const colors = [];
+    
+    for (let i = 0; i < pos.count; i++) {
+        if (indices.includes(i)) {
+            const v = new THREE.Vector3(pos.getX(i), pos.getY(i), pos.getZ(i));
+            v.applyMatrix4(model.matrixWorld);
+            positions.push(v.x, v.y, v.z);
+            colors.push(1.0, 0.8, 0.0);
+        }
+    }
+    
+    if (positions.length > 0) {
+        const geo = new THREE.BufferGeometry();
+        geo.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+        geo.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+        
+        const mat = new THREE.PointsMaterial({
+            size: 0.025,
+            vertexColors: true,
+            sizeAttenuation: true,
+            transparent: true,
+            opacity: 0.9
+        });
+        
+        highlightMesh = new THREE.Points(geo, mat);
+        scene.add(highlightMesh);
+    }
+    
+    if (centerPos) {
+        const sphereGeo = new THREE.SphereGeometry(brushRadius * 0.3, 16, 16);
+        const sphereMat = new THREE.MeshBasicMaterial({
+            color: 0xff8800,
+            transparent: true,
+            opacity: 0.3,
+            wireframe: true
+        });
+        highlightSphere = new THREE.Mesh(sphereGeo, sphereMat);
+        highlightSphere.position.copy(centerPos);
+        scene.add(highlightSphere);
+    }
+}
+
+function selectArea(centerPos, radius) {
+    if (!model || !model.geometry) {
+        addLog('❌ Сначала загрузите модель!', 'error');
+        return;
+    }
+    
+    const positions = getVertexPositions();
+    if (!positions) return;
+    
+    selectedIndices = [];
+    for (let i = 0; i < positions.length; i++) {
+        const dist = positions[i].distanceTo(centerPos);
+        if (dist < radius) {
+            selectedIndices.push(i);
+        }
+    }
+    
+    document.getElementById('info-selected').textContent = selectedIndices.length;
+    highlightIndices(selectedIndices, centerPos);
+    
+    if (selectedIndices.length === 0) {
+        document.getElementById('info-status').textContent = '❌ Нет вершин';
+        document.getElementById('info-status').className = 'status error';
+        addLog('❌ Нет вершин в радиусе', 'error');
+    } else {
+        document.getElementById('info-status').textContent = `✅ ${selectedIndices.length} вершин`;
+        document.getElementById('info-status').className = 'status success';
+        addLog(`🎯 Выделено: ${selectedIndices.length} вершин`, 'success');
+    }
+}
+
+// ============================================================
+// КЛИК МЫШЬЮ ДЛЯ ВЫДЕЛЕНИЯ
+// ============================================================
+
+renderer.domElement.addEventListener('click', function(event) {
+    if (!model) {
+        addLog('❌ Сначала загрузите модель!', 'error');
+        return;
+    }
+    
+    const rect = renderer.domElement.getBoundingClientRect();
+    pointer.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+    pointer.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+    
+    raycaster.setFromCamera(pointer, camera);
+    
+    const intersects = raycaster.intersectObject(model, true);
+    
+    if (intersects.length > 0) {
+        const point = intersects[0].point;
+        addLog(`🖱 Клик: (${point.x.toFixed(2)}, ${point.y.toFixed(2)}, ${point.z.toFixed(2)})`, 'info');
+        selectArea(point, brushRadius);
+    } else {
+        addLog('⚠️ Клик мимо модели', 'info');
+    }
+});
+
+// ============================================================
+// ПЕРЕКЛЮЧЕНИЕ РЕЖИМА
+// ============================================================
+
+function toggleMode() {
+    if (currentMode === 'vertex') {
+        currentMode = 'surface';
+        document.getElementById('btn-surface-mode').textContent = '🔘 Режим: Поверхность';
+        document.getElementById('btn-surface-mode').style.background = '#1a6a4a';
+        document.getElementById('btn-surface-mode').style.borderColor = '#3aaa6a';
+        document.getElementById('mode-indicator').textContent = '🔸 Режим: Поверхность (не меняет каркас)';
+        document.getElementById('mode-indicator').className = 'mode-indicator surface';
+        document.getElementById('info-mode').textContent = '🔸 Поверхность';
+        document.getElementById('info-mode').className = 'value mode-surface';
+        addLog('🔘 Включен режим ПОВЕРХНОСТИ (сглаживание без изменения каркаса)', 'success');
+    } else {
+        currentMode = 'vertex';
+        document.getElementById('btn-surface-mode').textContent = '🔘 Режим: Вершины';
+        document.getElementById('btn-surface-mode').style.background = '#2a4a4a';
+        document.getElementById('btn-surface-mode').style.borderColor = '#4a8a8a';
+        document.getElementById('mode-indicator').textContent = '🔹 Режим: Вершины (меняет каркас)';
+        document.getElementById('mode-indicator').className = 'mode-indicator vertex';
+        document.getElementById('info-mode').textContent = '🔹 Вершины';
+        document.getElementById('info-mode').className = 'value mode-vertex';
+        addLog('🔘 Включен режим ВЕРШИН (сглаживание с изменением каркаса)', 'info');
+    }
+}
+
+// ============================================================
+// ИНСТРУМЕНТЫ - ПЛАВНАЯ ВЕРСИЯ С НАСТРОЙКАМИ
+// ============================================================
+
+// --- СГЛАЖИВАНИЕ (УНИВЕРСАЛЬНОЕ) ---
+function applySmooth() {
+    if (!model || selectedIndices.length === 0) {
+        addLog('❌ Сначала выделите область! Кликните по модели.', 'error');
+        return;
+    }
+    
+    if (currentMode === 'surface') {
+        applySurfaceSmooth();
+    } else {
+        applyVertexSmooth();
+    }
+}
+
+// --- СГЛАЖИВАНИЕ ВЕРШИН (МЕНЯЕТ КАРКАС) ---
+function applyVertexSmooth() {
+    const iterations = smoothIterations;
+    const strength = smoothStrength;
+    
+    addLog(`🔄 Сглаживание вершин ${selectedIndices.length} вершин... (${iterations} итераций)`, 'info');
+    document.getElementById('info-status').textContent = '⏳ Сглаживание вершин...';
+    document.getElementById('info-status').className = 'status warning';
+    
+    const pos = model.geometry.attributes.position;
+    const index = model.geometry.index;
+    
+    // Находим центр выделения для падения силы
+    const center = new THREE.Vector3();
+    let count = 0;
+    for (const idx of selectedIndices) {
+        center.add(new THREE.Vector3(pos.getX(idx), pos.getY(idx), pos.getZ(idx)));
+        count++;
+    }
+    if (count > 0) center.divideScalar(count);
+    
+    let maxDist = 0;
+    const positions = [];
+    for (let i = 0; i < pos.count; i++) {
+        const v = new THREE.Vector3(pos.getX(i), pos.getY(i), pos.getZ(i));
+        positions.push(v);
+        if (selectedIndices.includes(i)) {
+            const dist = v.distanceTo(center);
+            if (dist > maxDist) maxDist = dist;
+        }
+    }
+    if (maxDist === 0) maxDist = brushRadius;
+    
+    for (let iter = 0; iter < iterations; iter++) {
+        const newPositions = positions.map(v => v.clone());
+        
+        if (index) {
+            for (let i = 0; i < index.count; i += 3) {
+                const a = index.getX(i);
+                const b = index.getX(i + 1);
+                const c = index.getX(i + 2);
+                
+                [a, b, c].forEach((v) => {
+                    if (selectedIndices.includes(v)) {
+                        const neighbors = [];
+                        for (let j = 0; j < index.count; j += 3) {
+                            const a2 = index.getX(j);
+                            const b2 = index.getX(j + 1);
+                            const c2 = index.getX(j + 2);
+                            if (a2 === v) { neighbors.push(b2, c2); }
+                            if (b2 === v) { neighbors.push(a2, c2); }
+                            if (c2 === v) { neighbors.push(a2, b2); }
+                        }
+                        const uniqueNeighbors = [...new Set(neighbors)];
+                        
+                        if (uniqueNeighbors.length > 0) {
+                            const avg = new THREE.Vector3();
+                            uniqueNeighbors.forEach(n => avg.add(positions[n]));
+                            avg.divideScalar(uniqueNeighbors.length);
+                            
+                            const dist = positions[v].distanceTo(center);
+                            const distanceFactor = Math.max(0, 1 - (dist / maxDist));
+                            const falloff = distanceFactor * distanceFactor;
+                            const finalFactor = strength * falloff;
+                            
+                            newPositions[v].lerp(avg, finalFactor);
+                        }
+                    }
+                });
+            }
+        }
+        
+        for (let i = 0; i < pos.count; i++) {
+            positions[i].copy(newPositions[i]);
+            if (selectedIndices.includes(i)) {
+                pos.setXYZ(i, newPositions[i].x, newPositions[i].y, newPositions[i].z);
+            }
+        }
+    }
+    
+    pos.needsUpdate = true;
+    model.geometry.computeVertexNormals();
+    
+    document.getElementById('info-status').textContent = `✅ Вершины сглажены (${selectedIndices.length})`;
+    document.getElementById('info-status').className = 'status success';
+    addLog(`✅ Сглаживание вершин завершено (${iterations} итераций)`, 'success');
+}
+
+// --- СГЛАЖИВАНИЕ ПОВЕРХНОСТИ (НЕ МЕНЯЕТ КАРКАС) ---
+function applySurfaceSmooth() {
+    const iterations = smoothIterations;
+    const strength = smoothStrength * 0.6;
+    
+    addLog(`🔄 Сглаживание поверхности ${selectedIndices.length} вершин... (${iterations} итераций)`, 'info');
+    document.getElementById('info-status').textContent = '⏳ Сглаживание поверхности...';
+    document.getElementById('info-status').className = 'status warning';
+    
+    const pos = model.geometry.attributes.position;
+    const index = model.geometry.index;
+    
+    // Сохраняем оригинальные позиции
+    const originalPositions = [];
+    for (let i = 0; i < pos.count; i++) {
+        originalPositions.push(new THREE.Vector3(pos.getX(i), pos.getY(i), pos.getZ(i)));
+    }
+    
+    // Находим центр выделения
+    const center = new THREE.Vector3();
+    let count = 0;
+    for (const idx of selectedIndices) {
+        center.add(originalPositions[idx]);
+        count++;
+    }
+    if (count > 0) center.divideScalar(count);
+    
+    let maxDist = 0;
+    for (const idx of selectedIndices) {
+        const dist = originalPositions[idx].distanceTo(center);
+        if (dist > maxDist) maxDist = dist;
+    }
+    if (maxDist === 0) maxDist = brushRadius;
+    
+    for (let iter = 0; iter < iterations; iter++) {
+        const newPositions = originalPositions.map(v => v.clone());
+        
+        if (index) {
+            for (let i = 0; i < index.count; i += 3) {
+                const a = index.getX(i);
+                const b = index.getX(i + 1);
+                const c = index.getX(i + 2);
+                
+                const hasSelected = [a, b, c].some(v => selectedIndices.includes(v));
+                if (!hasSelected) continue;
+                
+                const triCenter = new THREE.Vector3();
+                triCenter.add(originalPositions[a]).add(originalPositions[b]).add(originalPositions[c]).divideScalar(3);
+                
+                const normal = new THREE.Vector3();
+                const v0 = originalPositions[b].clone().sub(originalPositions[a]);
+                const v1 = originalPositions[c].clone().sub(originalPositions[a]);
+                normal.crossVectors(v0, v1).normalize();
+                
+                if (normal.length() > 0.001) {
+                    [a, b, c].forEach((idx) => {
+                        if (selectedIndices.includes(idx)) {
+                            const v = originalPositions[idx];
+                            const proj = v.clone().sub(triCenter);
+                            const dot = proj.dot(normal);
+                            proj.sub(normal.clone().multiplyScalar(dot));
+                            proj.add(triCenter);
+                            
+                            const dist = v.distanceTo(triCenter);
+                            const distanceFactor = Math.max(0, 1 - (dist / maxDist));
+                            const falloff = distanceFactor * distanceFactor;
+                            const finalFactor = strength * falloff;
+                            
+                            newPositions[idx].lerp(proj, finalFactor);
+                        }
+                    });
+                }
+            }
+        }
+        
+        for (let i = 0; i < pos.count; i++) {
+            if (selectedIndices.includes(i)) {
+                originalPositions[i].copy(newPositions[i]);
+                pos.setXYZ(i, newPositions[i].x, newPositions[i].y, newPositions[i].z);
+            }
+        }
+    }
+    
+    pos.needsUpdate = true;
+    model.geometry.computeVertexNormals();
+    
+    document.getElementById('info-status').textContent = `✅ Поверхность сглажена (${selectedIndices.length})`;
+    document.getElementById('info-status').className = 'status success';
+    addLog(`✅ Сглаживание поверхности завершено (${iterations} итераций)`, 'success');
+}
+
+// --- ОСТАЛЬНЫЕ ИНСТРУМЕНТЫ ---
+
+function applyPull() {
+    if (!model || selectedIndices.length === 0) {
+        addLog('❌ Сначала выделите область! Кликните по модели.', 'error');
+        return;
+    }
+    
+    addLog(`⬆ Плавное вытягивание ${selectedIndices.length} вершин...`, 'info');
+    document.getElementById('info-status').textContent = '⏳ Вытягивание...';
+    document.getElementById('info-status').className = 'status warning';
+    
+    const pos = model.geometry.attributes.position;
+    const normals = model.geometry.attributes.normal;
+    
+    const center = new THREE.Vector3();
+    let count = 0;
+    for (const idx of selectedIndices) {
+        center.add(new THREE.Vector3(pos.getX(idx), pos.getY(idx), pos.getZ(idx)));
+        count++;
+    }
+    center.divideScalar(count);
+    
+    const radius = brushRadius * 0.9;
+    const strength = 0.02;
+    
+    const newPositions = [];
+    for (let i = 0; i < pos.count; i++) {
+        newPositions.push(new THREE.Vector3(pos.getX(i), pos.getY(i), pos.getZ(i)));
+    }
+    
+    for (const idx of selectedIndices) {
+        const v = new THREE.Vector3(pos.getX(idx), pos.getY(idx), pos.getZ(idx));
+        const dist = v.distanceTo(center);
+        if (dist < radius) {
+            const factor = Math.pow(1 - dist / radius, 1.5);
+            const n = new THREE.Vector3(normals.getX(idx), normals.getY(idx), normals.getZ(idx));
+            v.add(n.multiplyScalar(strength * factor));
+            newPositions[idx] = v;
+        }
+    }
+    
+    for (let i = 0; i < pos.count; i++) {
+        if (selectedIndices.includes(i)) {
+            pos.setXYZ(i, newPositions[i].x, newPositions[i].y, newPositions[i].z);
+        }
+    }
+    pos.needsUpdate = true;
+    model.geometry.computeVertexNormals();
+    
+    document.getElementById('info-status').textContent = `✅ Вытянуто (${selectedIndices.length} вершин)`;
+    document.getElementById('info-status').className = 'status success';
+    addLog('✅ Плавное вытягивание завершено', 'success');
+}
+
+function applyPush() {
+    if (!model || selectedIndices.length === 0) {
+        addLog('❌ Сначала выделите область! Кликните по модели.', 'error');
+        return;
+    }
+    
+    addLog(`⬇ Плавное вдавливание ${selectedIndices.length} вершин...`, 'info');
+    document.getElementById('info-status').textContent = '⏳ Вдавливание...';
+    document.getElementById('info-status').className = 'status warning';
+    
+    const pos = model.geometry.attributes.position;
+    const normals = model.geometry.attributes.normal;
+    
+    const center = new THREE.Vector3();
+    let count = 0;
+    for (const idx of selectedIndices) {
+        center.add(new THREE.Vector3(pos.getX(idx), pos.getY(idx), pos.getZ(idx)));
+        count++;
+    }
+    center.divideScalar(count);
+    
+    const radius = brushRadius * 0.9;
+    const strength = 0.02;
+    
+    const newPositions = [];
+    for (let i = 0; i < pos.count; i++) {
+        newPositions.push(new THREE.Vector3(pos.getX(i), pos.getY(i), pos.getZ(i)));
+    }
+    
+    for (const idx of selectedIndices) {
+        const v = new THREE.Vector3(pos.getX(idx), pos.getY(idx), pos.getZ(idx));
+        const dist = v.distanceTo(center);
+        if (dist < radius) {
+            const factor = Math.pow(1 - dist / radius, 1.5);
+            const n = new THREE.Vector3(normals.getX(idx), normals.getY(idx), normals.getZ(idx));
+            v.add(n.multiplyScalar(-strength * factor));
+            newPositions[idx] = v;
+        }
+    }
+    
+    for (let i = 0; i < pos.count; i++) {
+        if (selectedIndices.includes(i)) {
+            pos.setXYZ(i, newPositions[i].x, newPositions[i].y, newPositions[i].z);
+        }
+    }
+    pos.needsUpdate = true;
+    model.geometry.computeVertexNormals();
+    
+    document.getElementById('info-status').textContent = `✅ Вдавлено (${selectedIndices.length} вершин)`;
+    document.getElementById('info-status').className = 'status success';
+    addLog('✅ Плавное вдавливание завершено', 'success');
+}
+
+function applyFlatten() {
+    if (!model || selectedIndices.length === 0) {
+        addLog('❌ Сначала выделите область! Кликните по модели.', 'error');
+        return;
+    }
+    
+    addLog(`📏 Плавное выравнивание ${selectedIndices.length} вершин...`, 'info');
+    document.getElementById('info-status').textContent = '⏳ Выравнивание...';
+    document.getElementById('info-status').className = 'status warning';
+    
+    const pos = model.geometry.attributes.position;
+    const positions = [];
+    for (let i = 0; i < pos.count; i++) {
+        positions.push(new THREE.Vector3(pos.getX(i), pos.getY(i), pos.getZ(i)));
+    }
+    
+    const index = model.geometry.index;
+    if (index) {
+        const newPositions = [...positions];
+        const smoothFactor = 0.3;
+        const affectedFaces = new Set();
+        
+        for (let i = 0; i < index.count; i += 3) {
+            const a = index.getX(i);
+            const b = index.getX(i + 1);
+            const c = index.getX(i + 2);
+            if (selectedIndices.includes(a) || selectedIndices.includes(b) || selectedIndices.includes(c)) {
+                affectedFaces.add(i);
+            }
+        }
+        
+        for (const faceIdx of affectedFaces) {
+            const a = index.getX(faceIdx);
+            const b = index.getX(faceIdx + 1);
+            const c = index.getX(faceIdx + 2);
+            
+            const center = new THREE.Vector3();
+            center.add(positions[a]).add(positions[b]).add(positions[c]).divideScalar(3);
+            
+            const normal = new THREE.Vector3();
+            const v0 = positions[b].clone().sub(positions[a]);
+            const v1 = positions[c].clone().sub(positions[a]);
+            normal.crossVectors(v0, v1).normalize();
+            
+            if (normal.length() > 0.001) {
+                for (const idx of [a, b, c]) {
+                    if (selectedIndices.includes(idx)) {
+                        const v = positions[idx];
+                        const proj = v.clone().sub(center);
+                        const dot = proj.dot(normal);
+                        proj.sub(normal.clone().multiplyScalar(dot));
+                        proj.add(center);
+                        newPositions[idx].lerp(proj, smoothFactor * 0.5);
+                    }
+                }
+            }
+        }
+        
+        for (let i = 0; i < pos.count; i++) {
+            if (selectedIndices.includes(i)) {
+                pos.setXYZ(i, newPositions[i].x, newPositions[i].y, newPositions[i].z);
+            }
+        }
+        pos.needsUpdate = true;
+        model.geometry.computeVertexNormals();
+    }
+    
+    document.getElementById('info-status').textContent = `✅ Выровнено (${selectedIndices.length} вершин)`;
+    document.getElementById('info-status').className = 'status success';
+    addLog('✅ Плавное выравнивание завершено', 'success');
+}
+
+function applyInflate() {
+    if (!model || selectedIndices.length === 0) {
+        addLog('❌ Сначала выделите область! Кликните по модели.', 'error');
+        return;
+    }
+    
+    addLog(`💨 Плавное надувание ${selectedIndices.length} вершин...`, 'info');
+    document.getElementById('info-status').textContent = '⏳ Надувание...';
+    document.getElementById('info-status').className = 'status warning';
+    
+    const pos = model.geometry.attributes.position;
+    const normals = model.geometry.attributes.normal;
+    
+    const center = new THREE.Vector3();
+    let count = 0;
+    for (const idx of selectedIndices) {
+        center.add(new THREE.Vector3(pos.getX(idx), pos.getY(idx), pos.getZ(idx)));
+        count++;
+    }
+    center.divideScalar(count);
+    
+    const radius = brushRadius * 0.9;
+    const strength = 0.03;
+    
+    const newPositions = [];
+    for (let i = 0; i < pos.count; i++) {
+        newPositions.push(new THREE.Vector3(pos.getX(i), pos.getY(i), pos.getZ(i)));
+    }
+    
+    for (const idx of selectedIndices) {
+        const v = new THREE.Vector3(pos.getX(idx), pos.getY(idx), pos.getZ(idx));
+        const dist = v.distanceTo(center);
+        if (dist < radius) {
+            const factor = Math.pow(1 - dist / radius, 1.5);
+            const dir = v.clone().sub(center).normalize();
+            const n = new THREE.Vector3(normals.getX(idx), normals.getY(idx), normals.getZ(idx));
+            const combined = dir.clone().add(n.clone().multiplyScalar(0.3)).normalize();
+            v.add(combined.multiplyScalar(strength * factor));
+            newPositions[idx] = v;
+        }
+    }
+    
+    for (let i = 0; i < pos.count; i++) {
+        if (selectedIndices.includes(i)) {
+            pos.setXYZ(i, newPositions[i].x, newPositions[i].y, newPositions[i].z);
+        }
+    }
+    pos.needsUpdate = true;
+    model.geometry.computeVertexNormals();
+    
+    document.getElementById('info-status').textContent = `✅ Надуто (${selectedIndices.length} вершин)`;
+    document.getElementById('info-status').className = 'status success';
+    addLog('✅ Плавное надувание завершено', 'success');
+}
+
+function applyPinch() {
+    if (!model || selectedIndices.length === 0) {
+        addLog('❌ Сначала выделите область! Кликните по модели.', 'error');
+        return;
+    }
+    
+    addLog(`🤏 Плавное сужение ${selectedIndices.length} вершин...`, 'info');
+    document.getElementById('info-status').textContent = '⏳ Сужение...';
+    document.getElementById('info-status').className = 'status warning';
+    
+    const pos = model.geometry.attributes.position;
+    const normals = model.geometry.attributes.normal;
+    
+    const center = new THREE.Vector3();
+    let count = 0;
+    for (const idx of selectedIndices) {
+        center.add(new THREE.Vector3(pos.getX(idx), pos.getY(idx), pos.getZ(idx)));
+        count++;
+    }
+    center.divideScalar(count);
+    
+    const radius = brushRadius * 0.9;
+    const strength = 0.025;
+    
+    const newPositions = [];
+    for (let i = 0; i < pos.count; i++) {
+        newPositions.push(new THREE.Vector3(pos.getX(i), pos.getY(i), pos.getZ(i)));
+    }
+    
+    for (const idx of selectedIndices) {
+        const v = new THREE.Vector3(pos.getX(idx), pos.getY(idx), pos.getZ(idx));
+        const dist = v.distanceTo(center);
+        if (dist < radius) {
+            const factor = Math.pow(1 - dist / radius, 1.5);
+            const dir = v.clone().sub(center).normalize();
+            const n = new THREE.Vector3(normals.getX(idx), normals.getY(idx), normals.getZ(idx));
+            v.add(dir.multiplyScalar(-strength * factor * 0.6));
+            v.add(n.clone().multiplyScalar(strength * factor * 0.3));
+            newPositions[idx] = v;
+        }
+    }
+    
+    for (let i = 0; i < pos.count; i++) {
+        if (selectedIndices.includes(i)) {
+            pos.setXYZ(i, newPositions[i].x, newPositions[i].y, newPositions[i].z);
+        }
+    }
+    pos.needsUpdate = true;
+    model.geometry.computeVertexNormals();
+    
+    document.getElementById('info-status').textContent = `✅ Сужено (${selectedIndices.length} вершин)`;
+    document.getElementById('info-status').className = 'status success';
+    addLog('✅ Плавное сужение завершено', 'success');
+}
+
+// ============================================================
+// ВЫДЕЛЕНИЕ ПО КНОПКАМ
+// ============================================================
+
+function selectCenter() {
+    if (!model) { addLog('❌ Загрузите модель!', 'error'); return; }
+    selectArea(new THREE.Vector3(0, 0, 0), brushRadius);
+}
+
+function selectTop() {
+    if (!model) { addLog('❌ Загрузите модель!', 'error'); return; }
+    const positions = getVertexPositions();
+    if (!positions) return;
+    let maxY = -999;
+    let maxIdx = 0;
+    for (let i = 0; i < positions.length; i++) {
+        if (positions[i].y > maxY) { maxY = positions[i].y; maxIdx = i; }
+    }
+    selectArea(positions[maxIdx], brushRadius);
+}
+
+function selectBottom() {
+    if (!model) { addLog('❌ Загрузите модель!', 'error'); return; }
+    const positions = getVertexPositions();
+    if (!positions) return;
+    let minY = 999;
+    let minIdx = 0;
+    for (let i = 0; i < positions.length; i++) {
+        if (positions[i].y < minY) { minY = positions[i].y; minIdx = i; }
+    }
+    selectArea(positions[minIdx], brushRadius);
+}
+
+function selectRandom() {
+    if (!model) { addLog('❌ Загрузите модель!', 'error'); return; }
+    const positions = getVertexPositions();
+    if (!positions) return;
+    const idx = Math.floor(Math.random() * positions.length);
+    selectArea(positions[idx], brushRadius);
+}
+
+function clearSelection() {
+    selectedIndices = [];
+    document.getElementById('info-selected').textContent = '0';
+    clearHighlight();
+    document.getElementById('info-status').textContent = '🧹 Снято';
+    document.getElementById('info-status').className = 'status success';
+    addLog('🧹 Выделение снято', 'info');
+}
+
+// ============================================================
+// ОТОБРАЖЕНИЕ
+// ============================================================
+
+document.getElementById('chk-wireframe').addEventListener('change', function() {
+    if (model) {
+        model.material.wireframe = this.checked;
+        model.material.needsUpdate = true;
+    }
+});
+
+document.getElementById('chk-texture').addEventListener('change', function() {
+    if (model && textureImage) {
+        if (this.checked) {
+            const texture = new THREE.Texture(textureImage);
+            texture.needsUpdate = true;
+            model.material.map = texture;
+        } else {
+            model.material.map = null;
+        }
+        model.material.needsUpdate = true;
+    }
+});
+
+document.getElementById('chk-highlight').addEventListener('change', function() {
+    showHighlight = this.checked;
+    if (!showHighlight) {
+        clearHighlight();
+    } else if (selectedIndices.length > 0) {
+        const positions = getVertexPositions();
+        if (positions && selectedIndices.length > 0) {
+            let center = new THREE.Vector3();
+            let count = 0;
+            for (const idx of selectedIndices) {
+                if (idx < positions.length) {
+                    center.add(positions[idx]);
+                    count++;
+                }
+            }
+            if (count > 0) center.divideScalar(count);
+            highlightIndices(selectedIndices, center);
+        }
+    }
+});
+
+// ============================================================
+// РАЗМЕР КИСТИ И НАСТРОЙКИ СГЛАЖИВАНИЯ
+// ============================================================
+
+document.getElementById('brush-size').addEventListener('input', function() {
+    brushRadius = this.value / 100;
+    document.getElementById('brush-label').textContent = brushRadius.toFixed(2);
+});
+
+document.getElementById('smooth-strength').addEventListener('input', function() {
+    smoothStrength = this.value / 100;
+    document.getElementById('strength-label').textContent = smoothStrength.toFixed(2);
+});
+
+document.getElementById('smooth-iterations').addEventListener('input', function() {
+    smoothIterations = parseInt(this.value);
+    document.getElementById('iterations-label').textContent = smoothIterations;
+});
+
+// ============================================================
+// КНОПКИ ЗАГРУЗКИ
+// ============================================================
+
+let modelName = '';
+
+document.getElementById('btn-load').addEventListener('click', function() {
+    document.getElementById('file-input').click();
+});
+
+document.getElementById('btn-load-mtl').addEventListener('click', function() {
+    document.getElementById('mtl-input').click();
+});
+
+document.getElementById('btn-load-texture').addEventListener('click', function() {
+    document.getElementById('texture-input').click();
+});
+
+document.getElementById('file-input').addEventListener('change', function(e) {
+    if (this.files.length > 0) {
+        const file = this.files[0];
+        modelName = file.name;
+        addLog(`📂 Загрузка: ${file.name} (${(file.size/1024).toFixed(1)} KB)`, 'info');
+        const reader = new FileReader();
+        reader.onload = function(ev) {
+            objText = ev.target.result;
+            addLog('✅ OBJ загружен', 'success');
+            loadModel();
+        };
+        reader.onerror = function() {
+            addLog('❌ Ошибка чтения файла', 'error');
+        };
+        reader.readAsText(file);
+    }
+    this.value = '';
+});
+
+document.getElementById('mtl-input').addEventListener('change', function(e) {
+    if (this.files.length > 0) {
+        const file = this.files[0];
+        addLog(`📄 Загрузка MTL: ${file.name}`, 'info');
+        const reader = new FileReader();
+        reader.onload = function(ev) {
+            mtlText = ev.target.result;
+            mtlLoaded = true;
+            document.getElementById('info-mtl').textContent = '✅';
+            document.getElementById('info-mtl').style.color = '#4CAF50';
+            addLog('✅ MTL загружен', 'success');
+            if (objText) loadModel();
+        };
+        reader.readAsText(file);
+    }
+    this.value = '';
+});
+
+document.getElementById('texture-input').addEventListener('change', function(e) {
+    if (this.files.length > 0) {
+        const file = this.files[0];
+        addLog(`🖼 Загрузка текстуры: ${file.name}`, 'info');
+        loadTextureFile(file);
+    }
+    this.value = '';
+});
+
+// ============================================================
+// ЭКСПОРТ
+// ============================================================
+
+document.getElementById('btn-export').addEventListener('click', function() {
+    if (!model) { addLog('❌ Нет модели для экспорта', 'error'); return; }
+    
+    const pos = model.geometry.attributes.position;
+    let obj = '';
+    
+    for (let i = 0; i < pos.count; i++) {
+        obj += `v ${pos.getX(i)} ${pos.getY(i)} ${pos.getZ(i)}\n`;
+    }
+    
+    if (model.geometry.index) {
+        const idx = model.geometry.index;
+        for (let i = 0; i < idx.count; i += 3) {
+            obj += `f ${idx.getX(i)+1} ${idx.getX(i+1)+1} ${idx.getX(i+2)+1}\n`;
+        }
+    }
+    
+    const blob = new Blob([obj], {type: 'text/plain'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'model_exported.obj';
+    a.click();
+    URL.revokeObjectURL(url);
+    addLog('💾 Модель экспортирована', 'success');
+});
+
+// ============================================================
+// КНОПКИ ИНСТРУМЕНТОВ
+// ============================================================
+
+document.getElementById('btn-center').addEventListener('click', selectCenter);
+document.getElementById('btn-top').addEventListener('click', selectTop);
+document.getElementById('btn-bottom').addEventListener('click', selectBottom);
+document.getElementById('btn-random').addEventListener('click', selectRandom);
+document.getElementById('btn-clear').addEventListener('click', clearSelection);
+document.getElementById('btn-smooth').addEventListener('click', applySmooth);
+document.getElementById('btn-pull').addEventListener('click', applyPull);
+document.getElementById('btn-push').addEventListener('click', applyPush);
+document.getElementById('btn-flatten').addEventListener('click', applyFlatten);
+document.getElementById('btn-inflate').addEventListener('click', applyInflate);
+document.getElementById('btn-pinch').addEventListener('click', applyPinch);
+document.getElementById('btn-surface-mode').addEventListener('click', toggleMode);
+
+// ============================================================
+// АНИМАЦИЯ
+// ============================================================
+
+function animate() {
+    requestAnimationFrame(animate);
+    controls.update();
+    renderer.render(scene, camera);
+}
+
+animate();
+
+// ============================================================
+// РЕСАЙЗ
+// ============================================================
+
+window.addEventListener('resize', function() {
+    const w = container.clientWidth;
+    const h = container.clientHeight;
+    camera.aspect = w / h;
+    camera.updateProjectionMatrix();
+    renderer.setSize(w, h);
+});
+
+// ============================================================
+// СТАРТ
+// ============================================================
+
+addLog('🏥 Nafis 3D - Скульптинг запущен', 'success');
+addLog('📖 1. Загрузите OBJ файл', 'info');
+addLog('📖 2. Загрузите MTL (если есть)', 'info');
+addLog('📖 3. Загрузите текстуру (если есть)', 'info');
+addLog('🖱 Кликните по модели для выделения', 'info');
+addLog('🔧 Регулируйте размер кисти ползунком', 'info');
+addLog('⚙️ Настройте силу и итерации сглаживания', 'info');
+addLog('🔄 Переключайте режимы: Вершины / Поверхность', 'info');
+</script>
+
+</body>
+</html>
