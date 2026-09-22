@@ -262,7 +262,7 @@
         }
         .brush-control span {
             font-size: 9px;
-            min-width: 24px;
+            min-width: 32px;
             text-align: center;
             color: #8a6d1f;
             font-weight: 800;
@@ -343,8 +343,8 @@
             <button class="danger" id="btn-clear">🧹 Снять</button>
             <div class="brush-control">
                 <span>🖌</span>
-                <input type="range" id="brush-size" min="1" max="100" value="30">
-                <span id="brush-label">0.30</span>
+                <input type="range" id="brush-size" min="1" max="500" value="200">
+                <span id="brush-label">0.10</span>
             </div>
         </div>
 
@@ -539,7 +539,7 @@ let objText = null;
 let mtlText = null;
 let textureImage = null;
 
-let brushRadius = 0.3;
+let brushRadius = 0.1;
 let showHighlight = true;
 
 let smoothStrength = 0.08;
@@ -548,7 +548,7 @@ let smoothFalloff = 5;
 
 let modelName = '';
 
-let currentMode = 'rotate'; // 'rotate' | 'move' | 'select'
+let currentMode = 'rotate';
 
 let historyStack = [];
 const MAX_HISTORY = 20;
@@ -562,6 +562,29 @@ let dragPlane = new THREE.Plane();
 let dragIntersection = new THREE.Vector3();
 let dragStartPoint = new THREE.Vector3();
 let dragStartModelPos = new THREE.Vector3();
+
+// ============================================================
+// ФУНКЦИЯ РАСЧЁТА РАДИУСА (логарифмическая шкала)
+// ============================================================
+
+function updateBrushRadius(sliderValue) {
+    const val = parseInt(sliderValue);
+    const t = (val - 1) / 499;
+    brushRadius = 0.001 * Math.pow(5000, t);
+
+    let label;
+    if (brushRadius < 0.01) {
+        label = brushRadius.toFixed(4);
+    } else if (brushRadius < 0.1) {
+        label = brushRadius.toFixed(3);
+    } else {
+        label = brushRadius.toFixed(2);
+    }
+    document.getElementById('brush-label').textContent = label;
+    return brushRadius;
+}
+
+updateBrushRadius(document.getElementById('brush-size').value);
 
 // ============================================================
 // ПЕРЕКЛЮЧЕНИЕ РЕЖИМОВ
@@ -617,7 +640,7 @@ function setMode(mode) {
 }
 
 // ============================================================
-// КЛИК ПО МОДЕЛИ (режим выделения)
+// КЛИК ПО МОДЕЛИ
 // ============================================================
 
 renderer.domElement.addEventListener('click', function(event) {
@@ -639,7 +662,7 @@ renderer.domElement.addEventListener('click', function(event) {
 });
 
 // ============================================================
-// ДВИЖЕНИЕ МОДЕЛИ (режим "move")
+// ДВИЖЕНИЕ МОДЕЛИ
 // ============================================================
 
 renderer.domElement.addEventListener('mousedown', function(event) {
@@ -656,14 +679,10 @@ renderer.domElement.addEventListener('mousedown', function(event) {
 
     if (intersects.length > 0) {
         isDraggingModel = true;
-
-        // Плоскость, перпендикулярная камере, через точку клика
         const normal = camera.getWorldDirection(new THREE.Vector3()).negate();
         dragPlane.setFromNormalAndCoplanarPoint(normal, intersects[0].point);
-
         dragStartPoint.copy(intersects[0].point);
         dragStartModelPos.copy(modelGroup.position);
-
         event.preventDefault();
     }
 });
@@ -759,7 +778,6 @@ function applyLoadedModel(materials) {
             return;
         }
 
-        // Центрируем детей
         const box = new THREE.Box3().setFromObject(modelGroup);
         const center = new THREE.Vector3();
         box.getCenter(center);
@@ -767,7 +785,6 @@ function applyLoadedModel(materials) {
             child.position.sub(center);
         });
 
-        // Масштабируем
         const box2 = new THREE.Box3().setFromObject(modelGroup);
         const size = box2.getSize(new THREE.Vector3());
         const maxDim = Math.max(size.x, size.y, size.z);
@@ -798,7 +815,6 @@ function applyLoadedModel(materials) {
             document.getElementById('info-selected').textContent = '0';
             clearHighlight();
             historyStack = [];
-            document.getElementById('bvh-badge').textContent = '⚡ Готов';
         }
     } catch (err) {
         addLog('❌ Ошибка: ' + err.message, 'error');
@@ -870,7 +886,8 @@ function loadTextureFile(file) {
 }
 
 // ============================================================
-// ВЫДЕЛЕНИЕ ОБЛАСТИ (без Worker, всё в основном потоке)
+// ВЫДЕЛЕНИЕ ОБЛАСТИ - УЛУЧШЕННАЯ ВЕРСИЯ
+// Всегда находит ближайшие вершины, даже если клик между ними
 // ============================================================
 
 function clearHighlight() {
@@ -898,27 +915,54 @@ function selectArea(centerPos, radius) {
     const posAttr = model.geometry.attributes.position;
     const count = posAttr.count;
 
-    // Переводим центр в локальные координаты модели
+    // Локальная позиция центра
     const localCenter = centerPos.clone();
     localCenter.sub(modelGroup.position);
-    // Учитываем scale и позицию дочернего меша
     localCenter.sub(model.position);
     const sx = model.scale.x || 1, sy = model.scale.y || 1, sz = model.scale.z || 1;
     localCenter.x /= sx;
     localCenter.y /= sy;
     localCenter.z /= sz;
 
-    const radiusSq = radius * radius * 0.5; // скорректировано на масштаб
-    selectedIndices = [];
-
+    // Собираем расстояния всех вершин
+    const allDistances = new Array(count);
     for (let i = 0; i < count; i++) {
         const px = posAttr.getX(i) - localCenter.x;
         const py = posAttr.getY(i) - localCenter.y;
         const pz = posAttr.getZ(i) - localCenter.z;
-        const distSq = px*px + py*py + pz*pz;
-        if (distSq < radiusSq) {
-            selectedIndices.push(i);
+        allDistances[i] = { idx: i, distSq: px*px + py*py + pz*pz };
+    }
+
+    // Сортируем по расстоянию
+    allDistances.sort((a, b) => a.distSq - b.distSq);
+
+    const radiusSq = radius * radius;
+    const MIN_VERTICES = 30;
+    const MAX_VERTICES = 50000;
+
+    selectedIndices = [];
+
+    // Сначала все, кто в радиусе
+    for (const item of allDistances) {
+        if (item.distSq < radiusSq) {
+            selectedIndices.push(item.idx);
+        } else {
+            break; // отсортировано — дальше все больше
         }
+    }
+
+    // Если мало — берём минимум 30 ближайших
+    if (selectedIndices.length < MIN_VERTICES) {
+        selectedIndices = [];
+        const takeCount = Math.min(MIN_VERTICES, allDistances.length);
+        for (let i = 0; i < takeCount; i++) {
+            selectedIndices.push(allDistances[i].idx);
+        }
+    }
+
+    // Ограничиваем максимум
+    if (selectedIndices.length > MAX_VERTICES) {
+        selectedIndices = selectedIndices.slice(0, MAX_VERTICES);
     }
 
     const elapsed = (performance.now() - startTime).toFixed(1);
@@ -940,7 +984,7 @@ function selectArea(centerPos, radius) {
         geo.setAttribute('position', new THREE.Float32BufferAttribute(hlPositions, 3));
         geo.setAttribute('color', new THREE.Float32BufferAttribute(hlColors, 3));
         const mat = new THREE.PointsMaterial({
-            size: 0.028,
+            size: Math.max(0.008, brushRadius * 0.15),
             vertexColors: true,
             sizeAttenuation: true,
             transparent: true,
@@ -949,7 +993,7 @@ function selectArea(centerPos, radius) {
         highlightMesh = new THREE.Points(geo, mat);
         scene.add(highlightMesh);
 
-        const sphereGeo = new THREE.SphereGeometry(brushRadius * 0.3, 16, 16);
+        const sphereGeo = new THREE.SphereGeometry(Math.max(0.005, brushRadius * 0.3), 12, 12);
         const sphereMat = new THREE.MeshBasicMaterial({
             color: 0xc9a961,
             transparent: true,
@@ -972,7 +1016,7 @@ function selectArea(centerPos, radius) {
 }
 
 // ============================================================
-// ИНСТРУМЕНТЫ (без Worker)
+// ИНСТРУМЕНТЫ
 // ============================================================
 
 function saveToHistory() {
@@ -1021,14 +1065,12 @@ function applySmooth() {
         const pos = model.geometry.attributes.position;
         const index = model.geometry.index;
 
-        // Центр
         const center = new THREE.Vector3();
         for (const idx of selectedIndices) {
             center.add(new THREE.Vector3(pos.getX(idx), pos.getY(idx), pos.getZ(idx)));
         }
         center.divideScalar(selectedIndices.length);
 
-        // MaxDist
         let maxDist = 0;
         for (const idx of selectedIndices) {
             const dx = pos.getX(idx) - center.x;
@@ -1039,7 +1081,6 @@ function applySmooth() {
         }
         if (maxDist === 0) maxDist = brushRadius;
 
-        // Соседи
         const selectedSet = new Set(selectedIndices);
         const neighborMap = new Map();
         if (index) {
@@ -1329,8 +1370,7 @@ document.getElementById('chk-highlight').addEventListener('change', function() {
 // ============================================================
 
 document.getElementById('brush-size').addEventListener('input', function() {
-    brushRadius = this.value / 100;
-    document.getElementById('brush-label').textContent = brushRadius.toFixed(2);
+    updateBrushRadius(this.value);
 });
 
 document.getElementById('smooth-strength').addEventListener('input', function() {
@@ -1477,7 +1517,8 @@ window.addEventListener('resize', function() {
 addLog('🏥 Nafis 3D запущен', 'success');
 addLog('📖 1. Загрузите OBJ', 'info');
 addLog('🎮 2. Режимы: Вращать / Двигать / Выделять', 'success');
-addLog('🛠 3. Инструменты после выделения', 'info');
+addLog('🖌 3. Ползунок кисти: 0.001 — 5.0', 'info');
+addLog('🛠 4. Клик в любом месте → минимум 30 вершин', 'success');
 </script>
 
 </body>
