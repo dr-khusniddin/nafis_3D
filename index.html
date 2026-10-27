@@ -17,7 +17,7 @@
         #app { display: flex; height: 100vh; }
 
         #sidebar {
-            width: 165px;
+            width: 170px;
             background: linear-gradient(180deg, #f5ead6 0%, #ede0c8 100%);
             padding: 8px 6px;
             border-right: 2px solid #c9a961;
@@ -111,35 +111,11 @@
             font-weight: 800;
         }
 
-        button.success {
-            background: linear-gradient(180deg, #a8d4a8 0%, #7eb87e 100%);
-            color: #1a3a1a;
-            border-color: #5a9a5a;
-        }
-
-        button.danger {
-            background: linear-gradient(180deg, #e8b8b8 0%, #d49898 100%);
-            color: #4a1a1a;
-            border-color: #b87878;
-        }
-
-        button.warning {
-            background: linear-gradient(180deg, #e8d498 0%, #d4c078 100%);
-            color: #4a3a10;
-            border-color: #b8a058;
-        }
-
-        button.new-model {
-            background: linear-gradient(180deg, #d8c8e8 0%, #c0a8d4 100%);
-            color: #3a1a4a;
-            border-color: #a888b8;
-        }
-
-        button.undo-btn {
-            background: linear-gradient(180deg, #b8d0e8 0%, #98b4d4 100%);
-            color: #1a2a4a;
-            border-color: #7898b8;
-        }
+        button.success { background: linear-gradient(180deg, #a8d4a8 0%, #7eb87e 100%); color: #1a3a1a; border-color: #5a9a5a; }
+        button.danger { background: linear-gradient(180deg, #e8b8b8 0%, #d49898 100%); color: #4a1a1a; border-color: #b87878; }
+        button.warning { background: linear-gradient(180deg, #e8d498 0%, #d4c078 100%); color: #4a3a10; border-color: #b8a058; }
+        button.new-model { background: linear-gradient(180deg, #d8c8e8 0%, #c0a8d4 100%); color: #3a1a4a; border-color: #a888b8; }
+        button.undo-btn { background: linear-gradient(180deg, #b8d0e8 0%, #98b4d4 100%); color: #1a2a4a; border-color: #7898b8; }
 
         .checkbox-label {
             display: flex;
@@ -151,12 +127,7 @@
             color: #4a3a1a;
             font-weight: 600;
         }
-        .checkbox-label input[type="checkbox"] {
-            width: 11px;
-            height: 11px;
-            cursor: pointer;
-            accent-color: #c9a961;
-        }
+        .checkbox-label input[type="checkbox"] { width: 11px; height: 11px; cursor: pointer; accent-color: #c9a961; }
 
         #canvas-container {
             flex: 1;
@@ -186,18 +157,8 @@
             justify-content: space-between;
             align-items: center;
         }
-        .info-item .label {
-            color: #8a6d1f;
-            font-size: 8px;
-            text-transform: uppercase;
-            font-weight: 700;
-        }
-        .info-item .value {
-            color: #3a3020;
-            font-weight: 800;
-            font-size: 10px;
-            text-align: right;
-        }
+        .info-item .label { color: #8a6d1f; font-size: 8px; text-transform: uppercase; font-weight: 700; }
+        .info-item .value { color: #3a3020; font-weight: 800; font-size: 10px; text-align: right; }
         .info-item .value.gold { color: #a88a3d; }
         .info-item .value.silver { color: #888; }
         .info-item .value.green { color: #4a8a4a; }
@@ -250,35 +211,10 @@
         #log .info { color: #4a6a9a; }
         #log .warn { color: #8a6a1a; }
 
-        .brush-control {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            margin: 2px 0;
-        }
-        .brush-control input[type="range"] {
-            flex: 1;
-            height: 3px;
-            -webkit-appearance: none;
-            background: #d4c8a8;
-            border-radius: 2px;
-            outline: none;
-        }
-        .brush-control input[type="range"]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background: linear-gradient(180deg, #e8c874 0%, #a88a3d 100%);
-            cursor: pointer;
-        }
-        .brush-control span {
-            font-size: 9px;
-            min-width: 32px;
-            text-align: center;
-            color: #8a6d1f;
-            font-weight: 800;
-        }
+        .brush-control { display: flex; align-items: center; gap: 4px; margin: 2px 0; }
+        .brush-control input[type="range"] { flex: 1; height: 3px; -webkit-appearance: none; background: #d4c8a8; border-radius: 2px; outline: none; }
+        .brush-control input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 10px; height: 10px; border-radius: 50%; background: linear-gradient(180deg, #e8c874 0%, #a88a3d 100%); cursor: pointer; }
+        .brush-control span { font-size: 9px; min-width: 32px; text-align: center; color: #8a6d1f; font-weight: 800; }
 
         .group-panel {
             background: rgba(255, 255, 255, 0.55);
@@ -295,15 +231,7 @@
             text-align: center;
         }
 
-        .mode-badge {
-            padding: 4px;
-            border-radius: 4px;
-            font-size: 9px;
-            text-align: center;
-            margin-top: 3px;
-            font-weight: 800;
-            border: 1px solid;
-        }
+        .mode-badge { padding: 4px; border-radius: 4px; font-size: 9px; text-align: center; margin-top: 3px; font-weight: 800; border: 1px solid; }
         .mode-badge.rotate { background: #d4e8c8; color: #2a5a2a; border-color: #7eb87e; }
         .mode-badge.select { background: #e8d4c8; color: #6a3a1a; border-color: #c89878; }
         .mode-badge.move { background: #d4dce8; color: #1a3a6a; border-color: #7898b8; }
@@ -320,10 +248,7 @@
             border: 2px solid #c9a961;
             animation: pulse 1.5s infinite;
         }
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.6; }
-        }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
     </style>
 </head>
 <body>
@@ -353,7 +278,7 @@
 
         <div class="group" id="axis-group" style="display:none;">
             <div class="group-title">📐 Ось движения</div>
-            <button class="axis-btn active" id="btn-axis-free">🌐 Свободно</button>
+            <button class="axis-btn active" id="btn-axis-free">🌐 Свободно (камера)</button>
             <button class="axis-btn" id="btn-axis-x">↔ X (влево/вправо)</button>
             <button class="axis-btn" id="btn-axis-y">↕ Y (вверх/вниз)</button>
             <button class="axis-btn" id="btn-axis-z">⇄ Z (глубина)</button>
@@ -587,11 +512,7 @@ let dragPlane = new THREE.Plane();
 let dragIntersection = new THREE.Vector3();
 let dragStartPoint = new THREE.Vector3();
 let dragStartModelPos = new THREE.Vector3();
-
-// Ось движения
 let moveAxis = 'free';
-
-// Для поворота модели
 let dragStartRotation = 0;
 let dragStartMouseX = 0;
 let dragStartMouseY = 0;
@@ -620,11 +541,10 @@ function updateBrushRadius(sliderValue) {
 updateBrushRadius(document.getElementById('brush-size').value);
 
 // ============================================================
-// ПРЕОБРАЗОВАНИЕ МИРОВОЙ ТОЧКИ В ЛОКАЛЬНУЮ
+// ПРЕОБРАЗОВАНИЯ КООРДИНАТ
 // ============================================================
 
 function worldToLocal(point) {
-    // ✅ Полная инверсия матрицы мира — учитывает position, rotation, scale
     model.updateMatrixWorld(true);
     const inverseMatrix = new THREE.Matrix4().copy(model.matrixWorld).invert();
     const localPoint = point.clone();
@@ -655,14 +575,9 @@ function setMode(mode) {
         badge.textContent = '🖐 Вращение экрана';
         badge.className = 'mode-badge rotate';
         controls.enabled = true;
-        controls.mouseButtons = {
-            LEFT: THREE.MOUSE.ROTATE,
-            MIDDLE: THREE.MOUSE.DOLLY,
-            RIGHT: THREE.MOUSE.PAN
-        };
+        controls.mouseButtons = { LEFT: THREE.MOUSE.ROTATE, MIDDLE: THREE.MOUSE.DOLLY, RIGHT: THREE.MOUSE.PAN };
         document.getElementById('info-status').textContent = '🖐 Вращение экрана';
         document.getElementById('info-status').className = 'status success';
-        addLog('🖐 Режим ВРАЩЕНИЯ', 'info');
     } else if (mode === 'move') {
         btnMove.classList.add('active');
         badge.textContent = '✋ Движение модели';
@@ -671,46 +586,28 @@ function setMode(mode) {
         controls.enabled = false;
         document.getElementById('info-status').textContent = '✋ Тяните модель';
         document.getElementById('info-status').className = 'status info';
-        addLog('✋ Режим ДВИЖЕНИЯ. Выберите ось!', 'success');
     } else if (mode === 'select') {
         btnSelect.classList.add('active');
         badge.textContent = '🎯 Выделение';
         badge.className = 'mode-badge select';
         controls.enabled = true;
-        controls.mouseButtons = {
-            LEFT: null,
-            MIDDLE: THREE.MOUSE.DOLLY,
-            RIGHT: THREE.MOUSE.PAN
-        };
+        controls.mouseButtons = { LEFT: null, MIDDLE: THREE.MOUSE.DOLLY, RIGHT: THREE.MOUSE.PAN };
         document.getElementById('info-status').textContent = '🎯 Кликните по модели';
         document.getElementById('info-status').className = 'status info';
-        addLog('🎯 Режим ВЫДЕЛЕНИЯ', 'success');
     }
 }
 
 function setMoveAxis(axis) {
     moveAxis = axis;
-
     const btns = ['free', 'x', 'y', 'z', 'rotY'];
-    btns.forEach(a => {
-        document.getElementById('btn-axis-' + a).classList.remove('active');
-    });
+    btns.forEach(a => document.getElementById('btn-axis-' + a).classList.remove('active'));
     document.getElementById('btn-axis-' + axis).classList.add('active');
-
-    const names = {
-        free: '🌐 Свободно',
-        x: '↔ X (влево/вправо)',
-        y: '↕ Y (вверх/вниз)',
-        z: '⇄ Z (вперёд/назад)',
-        rotY: '🔄 Поворот вокруг Y'
-    };
+    const names = { free: '🌐 Свободно', x: '↔ X', y: '↕ Y', z: '⇄ Z', rotY: '🔄 Поворот' };
     document.getElementById('info-status').textContent = names[axis];
-    document.getElementById('info-status').className = 'status info';
-    addLog('📐 Ось: ' + names[axis], 'info');
 }
 
 // ============================================================
-// КЛИК ПО МОДЕЛИ (режим выделения)
+// КЛИК ПО МОДЕЛИ
 // ============================================================
 
 renderer.domElement.addEventListener('click', function(event) {
@@ -721,14 +618,11 @@ renderer.domElement.addEventListener('click', function(event) {
     const rect = renderer.domElement.getBoundingClientRect();
     pointer.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
     pointer.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
-
     raycaster.setFromCamera(pointer, camera);
     const intersects = raycaster.intersectObject(model, true);
 
     if (intersects.length > 0) {
         selectArea(intersects[0].point, brushRadius);
-    } else {
-        addLog('⚠️ Клик мимо модели', 'warn');
     }
 });
 
@@ -737,33 +631,24 @@ renderer.domElement.addEventListener('click', function(event) {
 // ============================================================
 
 renderer.domElement.addEventListener('mousedown', function(event) {
-    // Кисть
     if (isPainting) {
-        if (event.button !== 0) return;
-        if (!model) return;
+        if (event.button !== 0 || !model) return;
         event.preventDefault();
-
         const rect = renderer.domElement.getBoundingClientRect();
         pointer.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
         pointer.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
         raycaster.setFromCamera(pointer, camera);
         const intersects = raycaster.intersectObject(model, true);
-        if (intersects.length > 0) {
-            applyPaintAt(intersects[0].point);
-        }
+        if (intersects.length > 0) applyPaintAt(intersects[0].point);
         return;
     }
 
-    // Движение модели
-    if (currentMode !== 'move') return;
-    if (event.button !== 0) return;
-    if (!model) return;
+    if (currentMode !== 'move' || event.button !== 0 || !model) return;
 
     const rect = renderer.domElement.getBoundingClientRect();
     pointer.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
     pointer.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
 
-    // Поворот вокруг Y
     if (moveAxis === 'rotY') {
         isDraggingModel = true;
         dragStartRotation = modelGroup.rotation.y;
@@ -788,85 +673,69 @@ renderer.domElement.addEventListener('mousedown', function(event) {
 });
 
 renderer.domElement.addEventListener('mousemove', function(event) {
-    // Кисть
     if (isPainting) {
-        if (event.buttons !== 1) return;
-        if (!model) return;
+        if (event.buttons !== 1 || !model) return;
         if (paintingTimer) return;
         paintingTimer = setTimeout(() => { paintingTimer = null; }, 60);
-
         const rect = renderer.domElement.getBoundingClientRect();
         pointer.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
         pointer.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
         raycaster.setFromCamera(pointer, camera);
         const intersects = raycaster.intersectObject(model, true);
-        if (intersects.length > 0) {
-            applyPaintAt(intersects[0].point);
-        }
+        if (intersects.length > 0) applyPaintAt(intersects[0].point);
         return;
     }
 
-    // Движение модели
-    if (currentMode !== 'move') return;
-    if (!isDraggingModel) return;
+    if (currentMode !== 'move' || !isDraggingModel) return;
 
-    // Поворот вокруг Y
     if (moveAxis === 'rotY') {
         const dx = event.clientX - dragStartMouseX;
         modelGroup.rotation.y = dragStartRotation + dx * 0.01;
         return;
     }
 
-    // Ограниченное движение по одной оси
     if (moveAxis === 'x' || moveAxis === 'y' || moveAxis === 'z') {
         const dx = event.clientX - dragStartMouseX;
         const dy = event.clientY - dragStartMouseY;
         const speed = 0.005;
-
         const newPos = dragStartModelPos.clone();
 
-        if (moveAxis === 'x') {
-            newPos.x = dragStartModelPos.x + dx * speed;
-        } else if (moveAxis === 'y') {
-            newPos.y = dragStartModelPos.y - dy * speed;
-        } else if (moveAxis === 'z') {
-            newPos.z = dragStartModelPos.z + dx * speed;
+        const camRight = new THREE.Vector3();
+        const camUp = new THREE.Vector3();
+        camRight.crossVectors(camera.up, camera.getWorldDirection(new THREE.Vector3())).normalize();
+        camUp.copy(camera.up);
+
+        if (moveAxis === 'x') newPos.add(camRight.multiplyScalar(dx * speed));
+        if (moveAxis === 'y') newPos.add(camUp.multiplyScalar(dy * speed));
+        if (moveAxis === 'z') {
+            const camDir = camera.getWorldDirection(new THREE.Vector3());
+            newPos.add(camDir.multiplyScalar(dx * speed));
         }
 
         modelGroup.position.copy(newPos);
         return;
     }
 
-    // Свободное движение
     const rect = renderer.domElement.getBoundingClientRect();
     pointer.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
     pointer.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
     raycaster.setFromCamera(pointer, camera);
     raycaster.ray.intersectPlane(dragPlane, dragIntersection);
-
     if (dragIntersection) {
         const delta = dragIntersection.clone().sub(dragStartPoint);
         modelGroup.position.copy(dragStartModelPos).add(delta);
     }
 });
 
-renderer.domElement.addEventListener('mouseup', function() {
-    isDraggingModel = false;
-});
-
-renderer.domElement.addEventListener('mouseleave', function() {
-    isDraggingModel = false;
-});
+renderer.domElement.addEventListener('mouseup', () => { isDraggingModel = false; });
+renderer.domElement.addEventListener('mouseleave', () => { isDraggingModel = false; });
 
 // ============================================================
 // ЗАГРУЗКА МОДЕЛИ
 // ============================================================
 
 function loadModel() {
-    if (!objText) {
-        addLog('❌ Сначала загрузите OBJ!', 'error');
-        return;
-    }
+    if (!objText) { addLog('❌ Сначала загрузите OBJ!', 'error'); return; }
     addLog('🔄 Загрузка...', 'info');
     try {
         while (modelGroup.children.length > 0) {
@@ -876,7 +745,7 @@ function loadModel() {
             modelGroup.remove(child);
         }
         modelGroup.position.set(0, 0, 0);
-        modelGroup.rotation.set(0, 0, 0);
+        modelGroup.rotation.set(-Math.PI / 2, 0, 0);
         modelGroup.scale.set(1, 1, 1);
 
         let materials = null;
@@ -892,9 +761,7 @@ function loadModel() {
         } else {
             applyLoadedModel(null);
         }
-    } catch (err) {
-        addLog('❌ Ошибка: ' + err.message, 'error');
-    }
+    } catch (err) { addLog('❌ Ошибка: ' + err.message, 'error'); }
 }
 
 function applyLoadedModel(materials) {
@@ -902,10 +769,8 @@ function applyLoadedModel(materials) {
         const loader = new OBJLoader();
         if (materials) loader.setMaterials(materials);
         const obj = loader.parse(objText);
-        if (!obj || obj.children.length === 0) {
-            addLog('❌ Нет геометрии', 'error');
-            return;
-        }
+        if (!obj || obj.children.length === 0) { addLog('❌ Нет геометрии', 'error'); return; }
+
         let meshCount = 0;
         obj.children.forEach(child => {
             if (child.isMesh) {
@@ -921,26 +786,19 @@ function applyLoadedModel(materials) {
                 modelGroup.add(child);
             }
         });
-        if (meshCount === 0) {
-            addLog('❌ Нет мешей', 'error');
-            return;
-        }
+        if (meshCount === 0) { addLog('❌ Нет мешей', 'error'); return; }
 
         const box = new THREE.Box3().setFromObject(modelGroup);
         const center = new THREE.Vector3();
         box.getCenter(center);
-        modelGroup.children.forEach(child => {
-            child.position.sub(center);
-        });
+        modelGroup.children.forEach(child => child.position.sub(center));
 
         const box2 = new THREE.Box3().setFromObject(modelGroup);
         const size = box2.getSize(new THREE.Vector3());
         const maxDim = Math.max(size.x, size.y, size.z);
         if (maxDim > 0) {
             const scale = 1.8 / maxDim;
-            modelGroup.children.forEach(child => {
-                child.scale.multiplyScalar(scale);
-            });
+            modelGroup.children.forEach(child => child.scale.multiplyScalar(scale));
         }
 
         model = modelGroup.children.find(c => c.isMesh);
@@ -965,10 +823,7 @@ function applyLoadedModel(materials) {
             clearHighlight();
             historyStack = [];
         }
-    } catch (err) {
-        addLog('❌ Ошибка: ' + err.message, 'error');
-        console.error(err);
-    }
+    } catch (err) { addLog('❌ Ошибка: ' + err.message, 'error'); }
 }
 
 // ============================================================
@@ -984,7 +839,7 @@ function newModel() {
         modelGroup.remove(child);
     }
     modelGroup.position.set(0, 0, 0);
-    modelGroup.rotation.set(0, 0, 0);
+    modelGroup.rotation.set(-Math.PI / 2, 0, 0);
     modelGroup.scale.set(1, 1, 1);
     model = null;
     objText = null;
@@ -1056,16 +911,11 @@ function clearHighlight() {
 }
 
 function selectArea(centerPos, radius) {
-    if (!model || !model.geometry) {
-        addLog('❌ Загрузите модель!', 'error');
-        return;
-    }
+    if (!model || !model.geometry) return;
 
     const startTime = performance.now();
     const posAttr = model.geometry.attributes.position;
     const count = posAttr.count;
-
-    // ✅ ПРАВИЛЬНО: используем полную инверсию матрицы мира
     const localCenter = worldToLocal(centerPos);
 
     const allDistances = new Array(count);
@@ -1079,7 +929,6 @@ function selectArea(centerPos, radius) {
 
     const radiusSq = radius * radius;
     const MIN_VERTICES = 30;
-    const MAX_VERTICES = 50000;
 
     selectedIndices = [];
     for (const item of allDistances) {
@@ -1092,14 +941,10 @@ function selectArea(centerPos, radius) {
             selectedIndices.push(allDistances[i].idx);
         }
     }
-    if (selectedIndices.length > MAX_VERTICES) {
-        selectedIndices = selectedIndices.slice(0, MAX_VERTICES);
-    }
 
     const elapsed = (performance.now() - startTime).toFixed(1);
     document.getElementById('info-selected').textContent = selectedIndices.length;
     document.getElementById('info-speed').textContent = `${elapsed}мс`;
-
     updateHighlight(selectedIndices, centerPos);
 
     if (selectedIndices.length === 0) {
@@ -1117,16 +962,13 @@ function updateHighlight(indices, centerPos) {
     if (!showHighlight || indices.length === 0) return;
 
     const posAttr = model.geometry.attributes.position;
-    const hlPositions = [];
-    const hlColors = [];
-
+    const hlPositions = [], hlColors = [];
     for (const idx of indices) {
         const v = new THREE.Vector3(posAttr.getX(idx), posAttr.getY(idx), posAttr.getZ(idx));
         v.applyMatrix4(model.matrixWorld);
         hlPositions.push(v.x, v.y, v.z);
         hlColors.push(0.85, 0.65, 0.15);
     }
-
     const geo = new THREE.BufferGeometry();
     geo.setAttribute('position', new THREE.Float32BufferAttribute(hlPositions, 3));
     geo.setAttribute('color', new THREE.Float32BufferAttribute(hlColors, 3));
@@ -1142,12 +984,7 @@ function updateHighlight(indices, centerPos) {
 
     if (centerPos) {
         const sphereGeo = new THREE.SphereGeometry(Math.max(0.005, brushRadius * 0.3), 12, 12);
-        const sphereMat = new THREE.MeshBasicMaterial({
-            color: 0xc9a961,
-            transparent: true,
-            opacity: 0.3,
-            wireframe: true
-        });
+        const sphereMat = new THREE.MeshBasicMaterial({ color: 0xc9a961, transparent: true, opacity: 0.3, wireframe: true });
         highlightSphere = new THREE.Mesh(sphereGeo, sphereMat);
         highlightSphere.position.copy(centerPos);
         scene.add(highlightSphere);
@@ -1155,29 +992,20 @@ function updateHighlight(indices, centerPos) {
 }
 
 // ============================================================
-// ИСТОРИЯ / ОТМЕНА
+// ИСТОРИЯ
 // ============================================================
 
 function saveToHistory() {
     if (!model || !model.geometry) return;
     const positions = new Float32Array(model.geometry.attributes.position.array);
-    historyStack.push({
-        positions: positions,
-        vertexCount: model.geometry.attributes.position.count
-    });
+    historyStack.push({ positions: positions, vertexCount: model.geometry.attributes.position.count });
     if (historyStack.length > MAX_HISTORY) historyStack.shift();
 }
 
 function undo() {
-    if (historyStack.length === 0) {
-        addLog('⚠️ Нечего отменять', 'warn');
-        return;
-    }
+    if (historyStack.length === 0) { addLog('⚠️ Нечего отменять', 'warn'); return; }
     const state = historyStack.pop();
-    if (state.vertexCount !== model.geometry.attributes.position.count) {
-        addLog('⚠️ Нельзя отменить', 'warn');
-        return;
-    }
+    if (state.vertexCount !== model.geometry.attributes.position.count) { addLog('⚠️ Нельзя отменить', 'warn'); return; }
     const posAttr = model.geometry.attributes.position;
     posAttr.array.set(state.positions);
     posAttr.needsUpdate = true;
@@ -1185,7 +1013,6 @@ function undo() {
     clearSelection();
     document.getElementById('info-status').textContent = `↩️ Отменено (${historyStack.length})`;
     document.getElementById('info-status').className = 'status info';
-    addLog(`↩️ Отменено. Осталось: ${historyStack.length}`, 'success');
 }
 
 // ============================================================
@@ -1193,37 +1020,20 @@ function undo() {
 // ============================================================
 
 function applySmooth() {
-    if (!model || selectedIndices.length === 0) {
-        addLog('❌ Выделите область! (режим 🎯)', 'error');
-        return;
-    }
+    if (!model || selectedIndices.length === 0) { addLog('❌ Выделите область!', 'error'); return; }
     applySmoothAt(selectedIndices, false);
 }
 
 function applySmoothAt(indices, isFromPainting) {
     if (!indices || indices.length === 0) return;
-
     saveToHistory();
     const startTime = performance.now();
 
     const pos = model.geometry.attributes.position;
     const index = model.geometry.index;
-
     const center = new THREE.Vector3();
-    for (const idx of indices) {
-        center.add(new THREE.Vector3(pos.getX(idx), pos.getY(idx), pos.getZ(idx)));
-    }
+    for (const idx of indices) center.add(new THREE.Vector3(pos.getX(idx), pos.getY(idx), pos.getZ(idx)));
     center.divideScalar(indices.length);
-
-    let maxDist = 0;
-    for (const idx of indices) {
-        const dx = pos.getX(idx) - center.x;
-        const dy = pos.getY(idx) - center.y;
-        const dz = pos.getZ(idx) - center.z;
-        const d = Math.sqrt(dx*dx + dy*dy + dz*dz);
-        if (d > maxDist) maxDist = d;
-    }
-    if (maxDist === 0) maxDist = brushRadius;
 
     const selectedSet = new Set(indices);
     const neighborMap = new Map();
@@ -1231,26 +1041,16 @@ function applySmoothAt(indices, isFromPainting) {
         const idxArr = index.array;
         for (let i = 0; i < idxArr.length; i += 3) {
             const a = idxArr[i], b = idxArr[i+1], c = idxArr[i+2];
-            if (selectedSet.has(a)) {
-                if (!neighborMap.has(a)) neighborMap.set(a, new Set());
-                neighborMap.get(a).add(b); neighborMap.get(a).add(c);
-            }
-            if (selectedSet.has(b)) {
-                if (!neighborMap.has(b)) neighborMap.set(b, new Set());
-                neighborMap.get(b).add(a); neighborMap.get(b).add(c);
-            }
-            if (selectedSet.has(c)) {
-                if (!neighborMap.has(c)) neighborMap.set(c, new Set());
-                neighborMap.get(c).add(a); neighborMap.get(c).add(b);
-            }
+            if (selectedSet.has(a)) { if (!neighborMap.has(a)) neighborMap.set(a, new Set()); neighborMap.get(a).add(b); neighborMap.get(a).add(c); }
+            if (selectedSet.has(b)) { if (!neighborMap.has(b)) neighborMap.set(b, new Set()); neighborMap.get(b).add(a); neighborMap.get(b).add(c); }
+            if (selectedSet.has(c)) { if (!neighborMap.has(c)) neighborMap.set(c, new Set()); neighborMap.get(c).add(a); neighborMap.get(c).add(b); }
         }
     }
 
     const positions = new Map();
-    for (const idx of indices) {
-        positions.set(idx, new THREE.Vector3(pos.getX(idx), pos.getY(idx), pos.getZ(idx)));
-    }
+    for (const idx of indices) positions.set(idx, new THREE.Vector3(pos.getX(idx), pos.getY(idx), pos.getZ(idx)));
 
+    const maxStep = brushRadius * 0.15;
     const iterCount = isFromPainting ? 1 : smoothIterations;
 
     for (let iter = 0; iter < iterCount; iter++) {
@@ -1260,19 +1060,20 @@ function applySmoothAt(indices, isFromPainting) {
             if (!neighbors || neighbors.size === 0) continue;
             const avg = new THREE.Vector3();
             let n = 0;
-            neighbors.forEach(ni => {
-                const p = positions.get(ni);
-                if (p) { avg.add(p); n++; }
-            });
+            neighbors.forEach(ni => { const p = positions.get(ni); if (p) { avg.add(p); n++; } });
             if (n === 0) continue;
             avg.divideScalar(n);
 
-            const dist = positions.get(idx).distanceTo(center);
-            const df = Math.max(0, 1 - dist / maxDist);
-            const ff = Math.pow(df, smoothFalloff / 5);
-            const factor = smoothStrength * ff;
+            const current = positions.get(idx);
+            const target = current.clone().lerp(avg, smoothStrength);
 
-            newPositions.set(idx, positions.get(idx).clone().lerp(avg, factor));
+            const step = target.clone().sub(current);
+            const stepLen = step.length();
+            if (stepLen > maxStep) {
+                step.multiplyScalar(maxStep / stepLen);
+                target.copy(current).add(step);
+            }
+            newPositions.set(idx, target);
         }
         newPositions.forEach((v, k) => positions.set(k, v));
     }
@@ -1289,79 +1090,100 @@ function applySmoothAt(indices, isFromPainting) {
 }
 
 // ============================================================
-// НАПРАВЛЕННЫЕ ИНСТРУМЕНТЫ
+// НАПРАВЛЕННЫЕ ИНСТРУМЕНТЫ (исправленные!)
 // ============================================================
 
-function applyPull() {
-    if (!model || selectedIndices.length === 0) { addLog('❌ Выделите область!', 'error'); return; }
-    applyDirectionalAt('pull', selectedIndices, false);
-}
-function applyPush() {
-    if (!model || selectedIndices.length === 0) { addLog('❌ Выделите область!', 'error'); return; }
-    applyDirectionalAt('push', selectedIndices, false);
-}
-function applyInflate() {
-    if (!model || selectedIndices.length === 0) { addLog('❌ Выделите область!', 'error'); return; }
-    applyDirectionalAt('inflate', selectedIndices, false);
-}
-function applyPinch() {
-    if (!model || selectedIndices.length === 0) { addLog('❌ Выделите область!', 'error'); return; }
-    applyDirectionalAt('pinch', selectedIndices, false);
-}
+function applyPull() { if (!model || selectedIndices.length === 0) { addLog('❌ Выделите область!', 'error'); return; } applyDirectionalAt('pull', selectedIndices, false); }
+function applyPush() { if (!model || selectedIndices.length === 0) { addLog('❌ Выделите область!', 'error'); return; } applyDirectionalAt('push', selectedIndices, false); }
+function applyInflate() { if (!model || selectedIndices.length === 0) { addLog('❌ Выделите область!', 'error'); return; } applyDirectionalAt('inflate', selectedIndices, false); }
+function applyPinch() { if (!model || selectedIndices.length === 0) { addLog('❌ Выделите область!', 'error'); return; } applyDirectionalAt('pinch', selectedIndices, false); }
 
 function applyDirectionalAt(type, indices, isFromPainting) {
     if (!indices || indices.length === 0) return;
-
     saveToHistory();
     const startTime = performance.now();
 
     const pos = model.geometry.attributes.position;
     const nor = model.geometry.attributes.normal;
     const typeNames = { pull: '⬆ Вытягивание', push: '⬇ Вдавливание', inflate: '💨 Надувание', pinch: '🤏 Сужение' };
-    const strengths = { pull: 0.015, push: 0.015, inflate: 0.02, pinch: 0.018 };
+
+    // ✅ СИЛА (увеличена чтобы было видно)
+    const strengths = { pull: 0.04, push: 0.04, inflate: 0.05, pinch: 0.04 };
     const strength = strengths[type];
-    const fp = smoothFalloff / 5;
 
     const center = new THREE.Vector3();
-    for (const idx of indices) {
-        center.add(new THREE.Vector3(pos.getX(idx), pos.getY(idx), pos.getZ(idx)));
-    }
+    for (const idx of indices) center.add(new THREE.Vector3(pos.getX(idx), pos.getY(idx), pos.getZ(idx)));
     center.divideScalar(indices.length);
 
-    const radius = brushRadius * 1.8;
+    // ✅ ПРАВИЛЬНОЕ НАПРАВЛЕНИЕ КАМЕРЫ В ЛОКАЛЬНЫХ КООРДИНАТАХ
+    // Берём точку "впереди" камеры и точку "позади", преобразуем в локальные, получаем вектор направления
+    const camPosWorld = camera.position.clone();
+    const camTargetWorld = camPosWorld.clone().add(camera.getWorldDirection(new THREE.Vector3()));
+    
+    const camPosLocal = worldToLocal(camPosWorld);
+    const camTargetLocal = worldToLocal(camTargetWorld);
+    const camDirLocal = camTargetLocal.clone().sub(camPosLocal).normalize();
 
-    for (const idx of indices) {
+    const radius = brushRadius;
+    const maxStep = brushRadius * 0.25;
+
+    // Расширяем радиус на 30% — мягкое влияние на соседние ткани
+    const expandedRadius = radius * 1.3;
+    const expandedRadiusSq = expandedRadius * expandedRadius;
+
+    // ✅ Ищем ВСЕ вершины в расширенном радиусе (не только выделенные)
+    const posAttr = model.geometry.attributes.position;
+    const allNearby = [];
+    for (let i = 0; i < posAttr.count; i++) {
+        const px = posAttr.getX(i) - center.x;
+        const py = posAttr.getY(i) - center.y;
+        const pz = posAttr.getZ(i) - center.z;
+        const dSq = px*px + py*py + pz*pz;
+        if (dSq < expandedRadiusSq) {
+            allNearby.push({ idx: i, distSq: dSq });
+        }
+    }
+
+    for (const item of allNearby) {
+        const idx = item.idx;
+        const dist = Math.sqrt(item.distSq);
+
+        // Затухание: 1 в центре, 0 на краю
+        const df = Math.max(0, 1 - dist / expandedRadius);
+        const factor = Math.pow(df, 2.0);
+
         const px = pos.getX(idx), py = pos.getY(idx), pz = pos.getZ(idx);
-        const dx = px - center.x, dy = py - center.y, dz = pz - center.z;
-        const dist = Math.sqrt(dx*dx + dy*dy + dz*dz);
-        if (dist >= radius) continue;
-
-        const df = Math.max(0, 1 - dist / radius);
-        const factor = Math.pow(df, 1.5 * fp);
-        const nx = nor.getX(idx), ny = nor.getY(idx), nz = nor.getZ(idx);
+        let dxv = 0, dyv = 0, dzv = 0;
 
         if (type === 'pull') {
-            pos.setXYZ(idx, px + nx * strength * factor, py + ny * strength * factor, pz + nz * strength * factor);
+            dxv = camDirLocal.x * strength * factor;
+            dyv = camDirLocal.y * strength * factor;
+            dzv = camDirLocal.z * strength * factor;
         } else if (type === 'push') {
-            pos.setXYZ(idx, px - nx * strength * factor, py - ny * strength * factor, pz - nz * strength * factor);
+            dxv = -camDirLocal.x * strength * factor;
+            dyv = -camDirLocal.y * strength * factor;
+            dzv = -camDirLocal.z * strength * factor;
         } else if (type === 'inflate') {
-            const dirLen = Math.sqrt(dx*dx + dy*dy + dz*dz) || 1;
-            const dirX = dx/dirLen, dirY = dy/dirLen, dirZ = dz/dirLen;
-            let cx = dirX + nx * 0.3;
-            let cy = dirY + ny * 0.3;
-            let cz = dirZ + nz * 0.3;
-            const cl = Math.sqrt(cx*cx + cy*cy + cz*cz) || 1;
-            cx /= cl; cy /= cl; cz /= cl;
-            pos.setXYZ(idx, px + cx * strength * factor, py + cy * strength * factor, pz + cz * strength * factor);
+            const dx = px - center.x, dy = py - center.y, dz = pz - center.z;
+            const len = Math.sqrt(dx*dx + dy*dy + dz*dz) || 1;
+            dxv = (dx/len) * strength * factor;
+            dyv = (dy/len) * strength * factor;
+            dzv = (dz/len) * strength * factor;
         } else if (type === 'pinch') {
-            const dirLen = Math.sqrt(dx*dx + dy*dy + dz*dz) || 1;
-            const dirX = dx/dirLen, dirY = dy/dirLen, dirZ = dz/dirLen;
-            pos.setXYZ(idx,
-                px + dirX * (-strength * factor * 0.6) + nx * (strength * factor * 0.3),
-                py + dirY * (-strength * factor * 0.6) + ny * (strength * factor * 0.3),
-                pz + dirZ * (-strength * factor * 0.6) + nz * (strength * factor * 0.3)
-            );
+            const dx = px - center.x, dy = py - center.y, dz = pz - center.z;
+            const len = Math.sqrt(dx*dx + dy*dy + dz*dz) || 1;
+            dxv = (-dx/len) * strength * factor * 0.7;
+            dyv = (-dy/len) * strength * factor * 0.7;
+            dzv = (-dz/len) * strength * factor * 0.7;
         }
+
+        const stepLen = Math.sqrt(dxv*dxv + dyv*dyv + dzv*dzv);
+        if (stepLen > maxStep) {
+            const k = maxStep / stepLen;
+            dxv *= k; dyv *= k; dzv *= k;
+        }
+
+        pos.setXYZ(idx, px + dxv, py + dyv, pz + dzv);
     }
 
     pos.needsUpdate = true;
@@ -1379,23 +1201,20 @@ function applyDirectionalAt(type, indices, isFromPainting) {
 // ============================================================
 
 function applyFlatten() {
-    if (!model || selectedIndices.length === 0) {
-        addLog('❌ Выделите область!', 'error');
-        return;
-    }
+    if (!model || selectedIndices.length === 0) { addLog('❌ Выделите область!', 'error'); return; }
     applyFlattenAt(selectedIndices, false);
 }
 
 function applyFlattenAt(indices, isFromPainting) {
     if (!indices || indices.length === 0) return;
-
     saveToHistory();
     const startTime = performance.now();
 
     const pos = model.geometry.attributes.position;
     const index = model.geometry.index;
     const selectedSet = new Set(indices);
-    const strength = 0.12;
+    const strength = 0.1;
+    const maxStep = brushRadius * 0.15;
 
     if (index) {
         const idxArr = index.array;
@@ -1407,10 +1226,7 @@ function applyFlattenAt(indices, isFromPainting) {
             const bx = pos.getX(b), by = pos.getY(b), bz = pos.getZ(b);
             const cx = pos.getX(c), cy = pos.getY(c), cz = pos.getZ(c);
 
-            const mcx = (ax + bx + cx) / 3;
-            const mcy = (ay + by + cy) / 3;
-            const mcz = (az + bz + cz) / 3;
-
+            const mcx = (ax + bx + cx) / 3, mcy = (ay + by + cy) / 3, mcz = (az + bz + cz) / 3;
             const v0x = bx - ax, v0y = by - ay, v0z = bz - az;
             const v1x = cx - ax, v1y = cy - ay, v1z = cz - az;
 
@@ -1423,15 +1239,21 @@ function applyFlattenAt(indices, isFromPainting) {
 
             for (const idx of [a, b, c]) {
                 if (!selectedSet.has(idx)) continue;
-                const px = pos.getX(idx) - mcx;
-                const py = pos.getY(idx) - mcy;
-                const pz = pos.getZ(idx) - mcz;
-                const dot = px*nx + py*ny + pz*nz;
-                pos.setXYZ(idx,
-                    pos.getX(idx) - dot * nx * strength,
-                    pos.getY(idx) - dot * ny * strength,
-                    pos.getZ(idx) - dot * nz * strength
-                );
+                const px = pos.getX(idx), py = pos.getY(idx), pz = pos.getZ(idx);
+                const dxc = px - mcx, dyc = py - mcy, dzc = pz - mcz;
+                const dot = dxc*nx + dyc*ny + dzc*nz;
+
+                let dxv = -dot * nx * strength;
+                let dyv = -dot * ny * strength;
+                let dzv = -dot * nz * strength;
+
+                const stepLen = Math.sqrt(dxv*dxv + dyv*dyv + dzv*dzv);
+                if (stepLen > maxStep) {
+                    const k = maxStep / stepLen;
+                    dxv *= k; dyv *= k; dzv *= k;
+                }
+
+                pos.setXYZ(idx, px + dxv, py + dyv, pz + dzv);
             }
         }
     }
@@ -1450,40 +1272,10 @@ function applyFlattenAt(indices, isFromPainting) {
 // ВЫДЕЛЕНИЕ ПО КНОПКАМ
 // ============================================================
 
-function selectCenter() {
-    if (!model) { addLog('❌ Загрузите модель!', 'error'); return; }
-    const box = new THREE.Box3().setFromObject(model);
-    const center = new THREE.Vector3();
-    box.getCenter(center);
-    selectArea(center, brushRadius);
-}
-
-function selectTop() {
-    if (!model) { addLog('❌ Загрузите модель!', 'error'); return; }
-    const box = new THREE.Box3().setFromObject(model);
-    const center = new THREE.Vector3();
-    box.getCenter(center);
-    center.y = box.max.y;
-    selectArea(center, brushRadius);
-}
-
-function selectBottom() {
-    if (!model) { addLog('❌ Загрузите модель!', 'error'); return; }
-    const box = new THREE.Box3().setFromObject(model);
-    const center = new THREE.Vector3();
-    box.getCenter(center);
-    center.y = box.min.y;
-    selectArea(center, brushRadius);
-}
-
-function selectRandom() {
-    if (!model) { addLog('❌ Загрузите модель!', 'error'); return; }
-    const pos = model.geometry.attributes.position;
-    const idx = Math.floor(Math.random() * pos.count);
-    const v = new THREE.Vector3(pos.getX(idx), pos.getY(idx), pos.getZ(idx));
-    v.applyMatrix4(model.matrixWorld);
-    selectArea(v, brushRadius);
-}
+function selectCenter() { if (!model) return; const box = new THREE.Box3().setFromObject(model); const center = new THREE.Vector3(); box.getCenter(center); selectArea(center, brushRadius); }
+function selectTop() { if (!model) return; const box = new THREE.Box3().setFromObject(model); const center = new THREE.Vector3(); box.getCenter(center); center.y = box.max.y; selectArea(center, brushRadius); }
+function selectBottom() { if (!model) return; const box = new THREE.Box3().setFromObject(model); const center = new THREE.Vector3(); box.getCenter(center); center.y = box.min.y; selectArea(center, brushRadius); }
+function selectRandom() { if (!model) return; const pos = model.geometry.attributes.position; const idx = Math.floor(Math.random() * pos.count); const v = new THREE.Vector3(pos.getX(idx), pos.getY(idx), pos.getZ(idx)); v.applyMatrix4(model.matrixWorld); selectArea(v, brushRadius); }
 
 function clearSelection() {
     selectedIndices = [];
@@ -1491,40 +1283,23 @@ function clearSelection() {
     clearHighlight();
     document.getElementById('info-status').textContent = '🧹 Снято';
     document.getElementById('info-status').className = 'status success';
-    addLog('🧹 Снято', 'info');
 }
 
 // ============================================================
-// КИСТЬ (painting)
+// КИСТЬ
 // ============================================================
 
 function startPainting(tool) {
     if (!model) { addLog('❌ Загрузите модель!', 'error'); return; }
-
     paintingTool = tool;
     isPainting = true;
-
-    const toolNames = {
-        smooth: '✨ Сглаживание',
-        pull: '⬆ Вытягивание',
-        push: '⬇ Вдавливание',
-        flatten: '📏 Выравнивание',
-        inflate: '💨 Надувание',
-        pinch: '🤏 Сужение'
-    };
-
+    const toolNames = { smooth: '✨ Сглаживание', pull: '⬆ Вытягивание', push: '⬇ Вдавливание', flatten: '📏 Выравнивание', inflate: '💨 Надувание', pinch: '🤏 Сужение' };
     document.getElementById('info-status').textContent = `🖌 КИСТЬ: ${toolNames[tool]}`;
     document.getElementById('info-status').className = 'status info';
-
-    const indicator = document.getElementById('painting-indicator');
-    indicator.style.display = 'block';
-    indicator.textContent = `🖌 КИСТЬ: ${toolNames[tool]} — Esc выкл`;
-
-    addLog(`🖌 КИСТЬ АКТИВНА: ${toolNames[tool]}`, 'success');
-    addLog(`   Зажмите ЛКМ на модели и водите`, 'info');
-    addLog(`   Esc — выключить кисть`, 'info');
-
+    document.getElementById('painting-indicator').style.display = 'block';
+    document.getElementById('painting-indicator').textContent = `🖌 КИСТЬ: ${toolNames[tool]} — Esc выкл`;
     container.style.cursor = 'crosshair';
+    addLog(`🖌 КИСТЬ АКТИВНА: ${toolNames[tool]}`, 'success');
 }
 
 function stopPainting() {
@@ -1535,16 +1310,12 @@ function stopPainting() {
     document.getElementById('painting-indicator').style.display = 'none';
     document.getElementById('info-status').textContent = '🖌 Кисть выключена';
     document.getElementById('info-status').className = 'status success';
-    addLog('🖌 Кисть выключена', 'info');
 }
 
 function applyPaintAt(point) {
     if (!paintingTool) return;
-
     const pos = model.geometry.attributes.position;
     const count = pos.count;
-
-    // ✅ ПРАВИЛЬНО: используем полную инверсию матрицы мира
     const localCenter = worldToLocal(point);
 
     const allDistances = new Array(count);
@@ -1558,7 +1329,6 @@ function applyPaintAt(point) {
 
     const radiusSq = brushRadius * brushRadius;
     const MIN_VERTICES = 30;
-
     const indices = [];
     for (const item of allDistances) {
         if (item.distSq < radiusSq) indices.push(item.idx);
@@ -1566,9 +1336,7 @@ function applyPaintAt(point) {
     }
     if (indices.length < MIN_VERTICES) {
         indices.length = 0;
-        for (let i = 0; i < Math.min(MIN_VERTICES, allDistances.length); i++) {
-            indices.push(allDistances[i].idx);
-        }
+        for (let i = 0; i < Math.min(MIN_VERTICES, allDistances.length); i++) indices.push(allDistances[i].idx);
     }
 
     switch (paintingTool) {
@@ -1585,64 +1353,24 @@ function applyPaintAt(point) {
     updateHighlight(indices, point);
 }
 
-document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape' && isPainting) {
-        stopPainting();
-    }
-});
+document.addEventListener('keydown', function(e) { if (e.key === 'Escape' && isPainting) stopPainting(); });
 
 // ============================================================
 // ОТОБРАЖЕНИЕ
 // ============================================================
 
-document.getElementById('chk-wireframe').addEventListener('change', function() {
-    if (model) {
-        model.material.wireframe = this.checked;
-        model.material.needsUpdate = true;
-    }
-});
-
-document.getElementById('chk-texture').addEventListener('change', function() {
-    if (model && textureImage) {
-        if (this.checked) {
-            const texture = new THREE.Texture(textureImage);
-            texture.needsUpdate = true;
-            texture.colorSpace = THREE.SRGBColorSpace;
-            model.material.map = texture;
-        } else {
-            model.material.map = null;
-        }
-        model.material.needsUpdate = true;
-    }
-});
-
-document.getElementById('chk-highlight').addEventListener('change', function() {
-    showHighlight = this.checked;
-    if (!showHighlight) clearHighlight();
-});
+document.getElementById('chk-wireframe').addEventListener('change', function() { if (model) { model.material.wireframe = this.checked; model.material.needsUpdate = true; } });
+document.getElementById('chk-texture').addEventListener('change', function() { if (model && textureImage) { if (this.checked) { const t = new THREE.Texture(textureImage); t.needsUpdate = true; t.colorSpace = THREE.SRGBColorSpace; model.material.map = t; } else { model.material.map = null; } model.material.needsUpdate = true; } });
+document.getElementById('chk-highlight').addEventListener('change', function() { showHighlight = this.checked; if (!showHighlight) clearHighlight(); });
 
 // ============================================================
 // СЛАЙДЕРЫ
 // ============================================================
 
-document.getElementById('brush-size').addEventListener('input', function() {
-    updateBrushRadius(this.value);
-});
-
-document.getElementById('smooth-strength').addEventListener('input', function() {
-    smoothStrength = this.value / 100;
-    document.getElementById('strength-label').textContent = smoothStrength.toFixed(2);
-});
-
-document.getElementById('smooth-iterations').addEventListener('input', function() {
-    smoothIterations = parseInt(this.value);
-    document.getElementById('iterations-label').textContent = smoothIterations;
-});
-
-document.getElementById('smooth-falloff').addEventListener('input', function() {
-    smoothFalloff = parseInt(this.value);
-    document.getElementById('falloff-label').textContent = smoothFalloff;
-});
+document.getElementById('brush-size').addEventListener('input', function() { updateBrushRadius(this.value); });
+document.getElementById('smooth-strength').addEventListener('input', function() { smoothStrength = this.value / 100; document.getElementById('strength-label').textContent = smoothStrength.toFixed(2); });
+document.getElementById('smooth-iterations').addEventListener('input', function() { smoothIterations = parseInt(this.value); document.getElementById('iterations-label').textContent = smoothIterations; });
+document.getElementById('smooth-falloff').addEventListener('input', function() { smoothFalloff = parseInt(this.value); document.getElementById('falloff-label').textContent = smoothFalloff; });
 
 // ============================================================
 // ЗАГРУЗКА ФАЙЛОВ
@@ -1654,15 +1382,9 @@ document.getElementById('btn-load-texture').addEventListener('click', () => docu
 
 document.getElementById('file-input').addEventListener('change', function(e) {
     if (this.files.length > 0) {
-        const file = this.files[0];
-        modelName = file.name;
-        addLog(`📂 ${file.name}`, 'info');
+        const file = this.files[0]; modelName = file.name;
         const reader = new FileReader();
-        reader.onload = function(ev) {
-            objText = ev.target.result;
-            addLog('✅ OBJ загружен', 'success');
-            loadModel();
-        };
+        reader.onload = function(ev) { objText = ev.target.result; addLog('✅ OBJ загружен', 'success'); loadModel(); };
         reader.readAsText(file);
     }
     this.value = '';
@@ -1671,26 +1393,15 @@ document.getElementById('file-input').addEventListener('change', function(e) {
 document.getElementById('mtl-input').addEventListener('change', function(e) {
     if (this.files.length > 0) {
         const file = this.files[0];
-        addLog(`📄 ${file.name}`, 'info');
         const reader = new FileReader();
-        reader.onload = function(ev) {
-            mtlText = ev.target.result;
-            document.getElementById('info-mtl').textContent = '✅';
-            document.getElementById('info-mtl').className = 'value green';
-            addLog('✅ MTL загружен', 'success');
-            if (objText) loadModel();
-        };
+        reader.onload = function(ev) { mtlText = ev.target.result; document.getElementById('info-mtl').textContent = '✅'; document.getElementById('info-mtl').className = 'value green'; if (objText) loadModel(); };
         reader.readAsText(file);
     }
     this.value = '';
 });
 
 document.getElementById('texture-input').addEventListener('change', function(e) {
-    if (this.files.length > 0) {
-        const file = this.files[0];
-        addLog(`🖼 ${file.name}`, 'info');
-        loadTextureFile(file);
-    }
+    if (this.files.length > 0) loadTextureFile(this.files[0]);
     this.value = '';
 });
 
@@ -1699,17 +1410,13 @@ document.getElementById('texture-input').addEventListener('change', function(e) 
 // ============================================================
 
 document.getElementById('btn-export').addEventListener('click', function() {
-    if (!model) { addLog('❌ Нет модели', 'error'); return; }
+    if (!model) return;
     const pos = model.geometry.attributes.position;
     let obj = '';
-    for (let i = 0; i < pos.count; i++) {
-        obj += `v ${pos.getX(i)} ${pos.getY(i)} ${pos.getZ(i)}\n`;
-    }
+    for (let i = 0; i < pos.count; i++) obj += `v ${pos.getX(i)} ${pos.getY(i)} ${pos.getZ(i)}\n`;
     if (model.geometry.index) {
         const idx = model.geometry.index;
-        for (let i = 0; i < idx.count; i += 3) {
-            obj += `f ${idx.getX(i)+1} ${idx.getX(i+1)+1} ${idx.getX(i+2)+1}\n`;
-        }
+        for (let i = 0; i < idx.count; i += 3) obj += `f ${idx.getX(i)+1} ${idx.getX(i+1)+1} ${idx.getX(i+2)+1}\n`;
     }
     const blob = new Blob([obj], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
@@ -1769,28 +1476,14 @@ function animate() {
 }
 animate();
 
-// ============================================================
-// РЕСАЙЗ
-// ============================================================
-
 window.addEventListener('resize', function() {
-    const w = container.clientWidth;
-    const h = container.clientHeight;
+    const w = container.clientWidth, h = container.clientHeight;
     camera.aspect = w / h;
     camera.updateProjectionMatrix();
     renderer.setSize(w, h);
 });
 
-// ============================================================
-// СТАРТ
-// ============================================================
-
 addLog('🏥 Nafis 3D запущен', 'success');
-addLog('📖 1. Загрузите OBJ', 'info');
-addLog('🎮 2. Режимы: Вращать / Двигать / Выделять', 'success');
-addLog('🖌 3. Кисть — двойной клик по инструменту', 'info');
-addLog('   Esc — выключить кисть', 'info');
-addLog('🛠 4. Обычный клик — применить один раз', 'info');
 </script>
 
 </body>
