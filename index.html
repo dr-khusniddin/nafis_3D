@@ -620,6 +620,19 @@ function updateBrushRadius(sliderValue) {
 updateBrushRadius(document.getElementById('brush-size').value);
 
 // ============================================================
+// ПРЕОБРАЗОВАНИЕ МИРОВОЙ ТОЧКИ В ЛОКАЛЬНУЮ
+// ============================================================
+
+function worldToLocal(point) {
+    // ✅ Полная инверсия матрицы мира — учитывает position, rotation, scale
+    model.updateMatrixWorld(true);
+    const inverseMatrix = new THREE.Matrix4().copy(model.matrixWorld).invert();
+    const localPoint = point.clone();
+    localPoint.applyMatrix4(inverseMatrix);
+    return localPoint;
+}
+
+// ============================================================
 // РЕЖИМЫ
 // ============================================================
 
@@ -702,7 +715,7 @@ function setMoveAxis(axis) {
 
 renderer.domElement.addEventListener('click', function(event) {
     if (currentMode !== 'select') return;
-    if (isPainting) return; // во время кисти — не выделяем
+    if (isPainting) return;
     if (!model) { addLog('❌ Загрузите модель!', 'error'); return; }
 
     const rect = renderer.domElement.getBoundingClientRect();
@@ -750,7 +763,7 @@ renderer.domElement.addEventListener('mousedown', function(event) {
     pointer.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
     pointer.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
 
-    // Для поворота вокруг Y — работаем без raycast
+    // Поворот вокруг Y
     if (moveAxis === 'rotY') {
         isDraggingModel = true;
         dragStartRotation = modelGroup.rotation.y;
@@ -864,6 +877,7 @@ function loadModel() {
         }
         modelGroup.position.set(0, 0, 0);
         modelGroup.rotation.set(0, 0, 0);
+        modelGroup.scale.set(1, 1, 1);
 
         let materials = null;
         if (mtlText) {
@@ -931,6 +945,7 @@ function applyLoadedModel(materials) {
 
         model = modelGroup.children.find(c => c.isMesh);
         if (model) {
+            model.updateMatrixWorld(true);
             const pos = model.geometry.attributes.position;
             const vertCount = pos.count;
             const faceCount = model.geometry.index ? model.geometry.index.count / 3 : vertCount / 3;
@@ -970,6 +985,7 @@ function newModel() {
     }
     modelGroup.position.set(0, 0, 0);
     modelGroup.rotation.set(0, 0, 0);
+    modelGroup.scale.set(1, 1, 1);
     model = null;
     objText = null;
     mtlText = null;
@@ -1049,13 +1065,8 @@ function selectArea(centerPos, radius) {
     const posAttr = model.geometry.attributes.position;
     const count = posAttr.count;
 
-    const localCenter = centerPos.clone();
-    localCenter.sub(modelGroup.position);
-    localCenter.sub(model.position);
-    const sx = model.scale.x || 1, sy = model.scale.y || 1, sz = model.scale.z || 1;
-    localCenter.x /= sx;
-    localCenter.y /= sy;
-    localCenter.z /= sz;
+    // ✅ ПРАВИЛЬНО: используем полную инверсию матрицы мира
+    const localCenter = worldToLocal(centerPos);
 
     const allDistances = new Array(count);
     for (let i = 0; i < count; i++) {
@@ -1240,7 +1251,6 @@ function applySmoothAt(indices, isFromPainting) {
         positions.set(idx, new THREE.Vector3(pos.getX(idx), pos.getY(idx), pos.getZ(idx)));
     }
 
-    // Для кисти — 1 итерация, для клика — сколько выбрано
     const iterCount = isFromPainting ? 1 : smoothIterations;
 
     for (let iter = 0; iter < iterCount; iter++) {
@@ -1506,7 +1516,6 @@ function startPainting(tool) {
     document.getElementById('info-status').textContent = `🖌 КИСТЬ: ${toolNames[tool]}`;
     document.getElementById('info-status').className = 'status info';
 
-    // Показать индикатор
     const indicator = document.getElementById('painting-indicator');
     indicator.style.display = 'block';
     indicator.textContent = `🖌 КИСТЬ: ${toolNames[tool]} — Esc выкл`;
@@ -1535,13 +1544,8 @@ function applyPaintAt(point) {
     const pos = model.geometry.attributes.position;
     const count = pos.count;
 
-    const localCenter = point.clone();
-    localCenter.sub(modelGroup.position);
-    localCenter.sub(model.position);
-    const sx = model.scale.x || 1, sy = model.scale.y || 1, sz = model.scale.z || 1;
-    localCenter.x /= sx;
-    localCenter.y /= sy;
-    localCenter.z /= sz;
+    // ✅ ПРАВИЛЬНО: используем полную инверсию матрицы мира
+    const localCenter = worldToLocal(point);
 
     const allDistances = new Array(count);
     for (let i = 0; i < count; i++) {
@@ -1567,7 +1571,6 @@ function applyPaintAt(point) {
         }
     }
 
-    // Применяем инструмент
     switch (paintingTool) {
         case 'smooth':  applySmoothAt(indices, true); break;
         case 'pull':    applyDirectionalAt('pull', indices, true); break;
@@ -1577,13 +1580,11 @@ function applyPaintAt(point) {
         case 'pinch':   applyDirectionalAt('pinch', indices, true); break;
     }
 
-    // Подсветка
     selectedIndices = indices;
     document.getElementById('info-selected').textContent = indices.length;
     updateHighlight(indices, point);
 }
 
-// Esc — выключить кисть
 document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape' && isPainting) {
         stopPainting();
@@ -1740,7 +1741,6 @@ document.getElementById('btn-bottom').addEventListener('click', selectBottom);
 document.getElementById('btn-random').addEventListener('click', selectRandom);
 document.getElementById('btn-clear').addEventListener('click', clearSelection);
 
-// Обычный клик — применить один раз
 document.getElementById('btn-smooth').addEventListener('click', applySmooth);
 document.getElementById('btn-pull').addEventListener('click', applyPull);
 document.getElementById('btn-push').addEventListener('click', applyPush);
@@ -1748,7 +1748,6 @@ document.getElementById('btn-flatten').addEventListener('click', applyFlatten);
 document.getElementById('btn-inflate').addEventListener('click', applyInflate);
 document.getElementById('btn-pinch').addEventListener('click', applyPinch);
 
-// Двойной клик — режим кисти
 document.getElementById('btn-smooth').addEventListener('dblclick', () => startPainting('smooth'));
 document.getElementById('btn-pull').addEventListener('dblclick', () => startPainting('pull'));
 document.getElementById('btn-push').addEventListener('dblclick', () => startPainting('push'));
